@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Omni — One Team. One Vision.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --ink2: #13131a;
+    --surface: #16161f;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8e8f0;
+    --muted: #7a7a9a;
+    --accent: #5b5ef4;
+    --accent2: #8b5cf6;
+    --glow: #5b5ef433;
+    --gold: #f0c040;
+    --green: #34d399;
+    --red: #f87171;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ink);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .4;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.1; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(10,10,15,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    letter-spacing: -.02em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: .875rem; font-weight: 500;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--accent);
+    color: #fff !important;
+    padding: .5rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    transition: opacity .2s !important;
+  }
+  .nav-cta:hover { opacity: .85; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, #5b5ef415 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, #8b5cf610 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(91,94,244,.12);
+    border: 1px solid rgba(91,94,244,.3);
+    border-radius: 999px;
+    padding: .35rem 1rem;
+    font-size: .75rem; font-weight: 600;
+    color: #a5b4fc;
+    letter-spacing: .08em; text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp .8s ease both;
+  }
+  .hero-badge::before { content: '●'; color: var(--green); font-size: .5rem; }
+  h1.hero-title {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    letter-spacing: -.04em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    animation: fadeUp .8s .1s ease both;
+  }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, #ec4899 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-size: 1.125rem; color: var(--muted); max-width: 520px;
+    margin: 0 auto 3rem;
+    animation: fadeUp .8s .2s ease both;
+    font-weight: 300;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp .8s .3s ease both;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff; border: none; cursor: pointer;
+    padding: .875rem 2rem; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .95rem; font-weight: 600;
+    transition: transform .2s, box-shadow .2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--glow);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text); border: 1px solid var(--border); cursor: pointer;
+    padding: .875rem 2rem; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .95rem; font-weight: 500;
+    transition: border-color .2s, background .2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--accent); background: var(--glow); }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    margin: 4rem auto; max-width: 900px;
+    animation: fadeUp .8s .4s ease both;
+  }
+  .stat-cell {
+    background: var(--surface);
+    padding: 2rem 1.5rem; text-align: center;
+    transition: background .2s;
+  }
+  .stat-cell:hover { background: var(--ink2); }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: block; margin-bottom: .25rem;
+  }
+  .stat-label { font-size: .75rem; color: var(--muted); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; }
+
+  /* ── SECTION BASE ── */
+  section { padding: 6rem 4rem; }
+  .section-tag {
+    font-size: .7rem; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 1rem; display: block;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; letter-spacing: -.03em;
+    margin-bottom: 1rem;
+  }
+  .section-sub { color: var(--muted); font-size: 1rem; max-width: 480px; font-weight: 300; }
+  .section-header { margin-bottom: 3.5rem; }
+
+  /* ── SERVICES ── */
+  #services { background: var(--ink2); }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  }
+  .service-card {
+    background: var(--surface);
+    padding: 2.5rem 2rem;
+    transition: background .25s;
+    position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .3s ease;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { background: rgba(91,94,244,.06); }
+  .service-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(91,94,244,.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; margin-bottom: 1.25rem;
+  }
+  .service-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+  .service-card p { font-size: .875rem; color: var(--muted); line-height: 1.6; }
+  .service-tag {
+    display: inline-block; margin-top: 1rem;
+    font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); background: rgba(91,94,244,.1);
+    padding: .25rem .6rem; border-radius: 4px;
+  }
+
+  /* ── RESULTS ── */
+  #results {
+    background: var(--ink);
+    position: relative; overflow: hidden;
+  }
+  #results::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #8b5cf615 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .results-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    position: relative; overflow: hidden;
+  }
+  .result-card.big { grid-column: span 2; }
+  .result-card h3 { font-size: .8rem; color: var(--muted); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .75rem; }
+  .result-big-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem; font-weight: 800; letter-spacing: -.04em;
+    background: linear-gradient(135deg, #fff 0%, var(--muted) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .result-big-num span { font-size: 1.5rem; color: var(--accent); -webkit-text-fill-color: var(--accent); }
+  .result-desc { font-size: .875rem; color: var(--muted); margin-top: .5rem; }
+  .result-bar {
+    margin-top: 1rem; height: 6px;
+    background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden;
+  }
+  .result-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    animation: barGrow 1.5s ease both;
+    animation-play-state: paused;
+  }
+  @keyframes barGrow { from { width: 0 } }
+
+  /* ── TEAM ── */
+  #team { background: var(--ink2); }
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem 1.5rem;
+    text-align: center;
+    transition: transform .25s, border-color .25s;
+  }
+  .team-card:hover { transform: translateY(-4px); border-color: rgba(91,94,244,.4); }
+  .team-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem; font-weight: 800; color: #fff;
+  }
+  .team-card.leader .team-avatar {
+    background: linear-gradient(135deg, #f0c040, #f97316);
+    box-shadow: 0 0 30px rgba(240,192,64,.2);
+  }
+  .team-name { font-size: .95rem; font-weight: 700; margin-bottom: .25rem; }
+  .team-role {
+    font-size: .75rem; color: var(--muted); font-weight: 400;
+  }
+  .team-badge {
+    display: inline-block; margin-top: .75rem;
+    font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    padding: .2rem .6rem; border-radius: 4px;
+  }
+  .badge-leader { background: rgba(240,192,64,.15); color: var(--gold); }
+  .badge-member { background: rgba(91,94,244,.12); color: #a5b4fc; }
+
+  /* ── QUIZ PREVIEW ── */
+  #quiz-preview {
+    background: var(--ink);
+    border-top: 1px solid var(--border);
+  }
+  .quiz-topics {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .quiz-topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    transition: border-color .2s, background .2s;
+    cursor: default;
+  }
+  .quiz-topic-card:hover { border-color: rgba(91,94,244,.4); background: rgba(91,94,244,.05); }
+  .quiz-topic-icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    background: rgba(91,94,244,.12);
+  }
+  .quiz-topic-name { font-size: .9rem; font-weight: 600; }
+  .quiz-topic-count { font-size: .75rem; color: var(--muted); }
+  .quiz-lock {
+    margin-left: auto; font-size: .75rem; color: var(--muted);
+  }
+
+  /* ── LOGIN MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,.8); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 3rem;
+    width: 100%; max-width: 420px;
+    animation: modalIn .3s ease;
+  }
+  @keyframes modalIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem; font-weight: 800;
+    text-align: center; margin-bottom: .5rem;
+  }
+  .modal-logo span { color: var(--accent); }
+  .modal-sub { text-align: center; color: var(--muted); font-size: .875rem; margin-bottom: 2rem; }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); margin-bottom: .5rem; letter-spacing: .05em; text-transform: uppercase; }
+  .form-group input {
+    width: 100%; padding: .875rem 1rem;
+    background: var(--ink2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: .95rem;
+    transition: border-color .2s;
+    outline: none;
+  }
+  .form-group input:focus { border-color: var(--accent); }
+  .login-btn {
+    width: 100%; padding: .875rem;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: .95rem; font-weight: 700;
+    transition: opacity .2s;
+  }
+  .login-btn:hover { opacity: .85; }
+  .login-error {
+    color: var(--red); font-size: .8rem;
+    text-align: center; margin-top: .75rem;
+    display: none;
+  }
+  .modal-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: none; border: none; color: var(--muted);
+    font-size: 1.25rem; cursor: pointer;
+  }
+
+  /* ── INTERNAL DASHBOARD (hidden by default) ── */
+  #internal-dashboard {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--ink);
+    overflow-y: auto;
+  }
+  .dash-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .dash-nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1rem;
+  }
+  .dash-nav-logo span { color: var(--accent); }
+  .dash-role-badge {
+    font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    padding: .3rem .8rem; border-radius: 4px;
+  }
+  .role-admin { background: rgba(240,192,64,.15); color: var(--gold); }
+  .role-member { background: rgba(91,94,244,.15); color: #a5b4fc; }
+  .role-upbase { background: rgba(52,211,153,.15); color: var(--green); }
+  .dash-user { font-size: .875rem; color: var(--muted); }
+  .dash-logout {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer;
+    padding: .4rem .9rem; border-radius: 6px; font-size: .8rem;
+    transition: border-color .2s, color .2s;
+  }
+  .dash-logout:hover { border-color: var(--red); color: var(--red); }
+  .dash-content { padding: 3rem; max-width: 1200px; margin: 0 auto; }
+  .dash-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem; font-weight: 800; margin-bottom: .5rem;
+  }
+  .dash-welcome { color: var(--muted); font-size: .95rem; margin-bottom: 3rem; }
+  .dash-sections {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .dash-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.75rem;
+    cursor: pointer;
+    transition: border-color .2s, transform .2s;
+  }
+  .dash-card:hover { border-color: rgba(91,94,244,.5); transform: translateY(-2px); }
+  .dash-card-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+  .dash-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+  .dash-card p { font-size: .825rem; color: var(--muted); }
+  .dash-card .coming-soon {
+    display: inline-block; margin-top: .75rem;
+    font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    background: rgba(248,113,113,.1); color: var(--red);
+    padding: .2rem .6rem; border-radius: 4px;
+  }
+  .dash-card .available {
+    display: inline-block; margin-top: .75rem;
+    font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    background: rgba(52,211,153,.1); color: var(--green);
+    padding: .2rem .6rem; border-radius: 4px;
+  }
+
+  /* ── QUIZ MODULE ── */
+  #quiz-module {
+    display: none;
+    position: fixed; inset: 0; z-index: 300;
+    background: var(--ink); overflow-y: auto;
+  }
+  .quiz-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+  }
+  .quiz-back {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: .875rem; display: flex; align-items: center; gap: .5rem;
+    font-family: 'DM Sans', sans-serif;
+    transition: color .2s;
+  }
+  .quiz-back:hover { color: var(--text); }
+  .quiz-body { padding: 3rem; max-width: 720px; margin: 0 auto; }
+
+  /* Topic Picker */
+  .quiz-topic-picker h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem; font-weight: 800; margin-bottom: .5rem;
+  }
+  .quiz-topic-picker p { color: var(--muted); margin-bottom: 2rem; }
+  .picker-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .picker-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+    cursor: pointer; transition: border-color .2s, background .2s;
+    text-align: center;
+  }
+  .picker-card:hover { border-color: var(--accent); background: rgba(91,94,244,.06); }
+  .picker-card .pic-icon { font-size: 2rem; margin-bottom: .75rem; }
+  .picker-card .pic-name { font-size: .9rem; font-weight: 700; }
+  .picker-card .pic-status { font-size: .75rem; color: var(--muted); margin-top: .25rem; }
+
+  /* Quiz Active */
+  .quiz-active { display: none; }
+  .quiz-progress-bar {
+    height: 4px; background: rgba(255,255,255,.06);
+    border-radius: 2px; margin-bottom: 2.5rem; overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px; transition: width .4s ease;
+  }
+  .quiz-q-num { font-size: .75rem; color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .75rem; }
+  .quiz-question { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.75rem; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: .75rem; }
+  .quiz-option {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.25rem;
+    cursor: pointer; transition: border-color .2s, background .2s;
+    font-size: .95rem; text-align: left;
+  }
+  .quiz-option:hover { border-color: var(--accent); background: rgba(91,94,244,.06); }
+  .quiz-option.correct { border-color: var(--green); background: rgba(52,211,153,.08); color: var(--green); }
+  .quiz-option.wrong { border-color: var(--red); background: rgba(248,113,113,.08); color: var(--red); }
+  .quiz-option.disabled { pointer-events: none; }
+  .quiz-explain {
+    margin-top: 1.25rem; padding: 1rem;
+    background: rgba(91,94,244,.08); border: 1px solid rgba(91,94,244,.2);
+    border-radius: 8px; font-size: .875rem; color: var(--muted); display: none;
+  }
+  .quiz-next-btn {
+    margin-top: 1.5rem; width: 100%;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 8px; padding: .875rem;
+    font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700;
+    cursor: pointer; display: none; transition: opacity .2s;
+  }
+  .quiz-next-btn:hover { opacity: .85; }
+
+  /* Quiz Result */
+  .quiz-result { display: none; text-align: center; padding: 3rem 0; }
+  .quiz-result h2 { font-size: 2rem; font-weight: 800; margin-bottom: .5rem; }
+  .result-score {
+    font-size: 5rem; font-weight: 800; font-family: 'Syne', sans-serif;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1; margin: 1.5rem 0;
+  }
+  .result-grade { font-size: 1rem; color: var(--muted); margin-bottom: 2rem; }
+  .result-retry {
+    background: none; border: 1px solid var(--border);
+    color: var(--text); padding: .75rem 1.75rem;
+    border-radius: 8px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 500;
+    margin-right: .75rem; transition: border-color .2s;
+  }
+  .result-retry:hover { border-color: var(--accent); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink2);
+    border-top: 1px solid var(--border);
+    padding: 3rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem;
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: .8rem; color: var(--muted); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .stats-strip { grid-template-columns: repeat(2,1fr); }
+    .results-grid { grid-template-columns: 1fr; }
+    .result-card.big { grid-column: span 1; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .dash-content { padding: 1.5rem; }
+    .quiz-body { padding: 1.5rem; }
+    .quiz-header, .dash-nav { padding: 1rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="#" class="nav-logo">Media<span>Omni</span></a>
+  <div class="nav-links">
+    <a href="#services">Dịch vụ</a>
+    <a href="#results">Kết quả</a>
+    <a href="#team">Team</a>
+    <a href="#quiz-preview">Quiz</a>
+    <a href="#" class="nav-cta" onclick="openLogin(); return false;">Đăng nhập</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-badge">UpBase × Media Omni • 2026</div>
+  <h1 class="hero-title">
+    One Team.<br>
+    <span class="line2">One Vision.</span>
+  </h1>
+  <p class="hero-sub">Performance marketing đa kênh — TikTok, Shopee, Meta, Google. Chúng tôi không chỉ chạy ads, chúng tôi xây hệ thống tăng trưởng.</p>
+  <div class="hero-actions">
+    <a href="#services" class="btn-primary">Xem năng lực</a>
+    <a href="#" class="btn-ghost" onclick="openLogin(); return false;">Team Hub →</a>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <span class="stat-num">323B</span>
+      <span class="stat-label">GMV Ads 2025</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">356B</span>
+      <span class="stat-label">NMV Total 2025</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">62B</span>
+      <span class="stat-label">Budget Managed</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">1B4</span>
+      <span class="stat-label">TikTok Rebate</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICES ══ -->
+<section id="services">
+  <div class="section-header">
+    <span class="section-tag">Năng lực</span>
+    <h2 class="section-title">Omni-channel Performance</h2>
+    <p class="section-sub">Phủ sóng toàn bộ hành trình mua hàng — từ awareness đến conversion.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">🎵</div>
+      <h3>TikTok Ads & Shop</h3>
+      <p>GMV Max, Video Shopping Ads, LIVE Ads, TopView. Demand creation engine cho mọi brand.</p>
+      <span class="service-tag">GMV Ads/NMV: 85%</span>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🛍️</div>
+      <h3>Shopee Ads</h3>
+      <p>Search Ads, Product Ads, Display Network. Intent capture — chuyển đổi người đã có nhu cầu.</p>
+      <span class="service-tag">GMV Ads/NMV: 60%</span>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📘</div>
+      <h3>Meta Ads & CPAS</h3>
+      <p>Facebook, Instagram, CPAS Shopee/Lazada. Retargeting và lookalike để mở rộng tệp.</p>
+      <span class="service-tag">Social Commerce</span>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔍</div>
+      <h3>Google Ads</h3>
+      <p>Search, Shopping, Display, YouTube. Bắt đúng intent — đúng lúc, đúng người.</p>
+      <span class="service-tag">Google Partner</span>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⚡</div>
+      <h3>Omni-channel Strategy</h3>
+      <p>Chiến lược phối hợp đa kênh — TikTok tạo demand, Shopee bắt conversion.</p>
+      <span class="service-tag">Full Funnel</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RESULTS ══ -->
+<section id="results">
+  <div class="section-header">
+    <span class="section-tag">Con số thực tế</span>
+    <h2 class="section-title">Những con số không biết nói dối</h2>
+    <p class="section-sub">Hiệu suất vận hành thực tế năm 2025 của team Media Omni tại UpBase.</p>
+  </div>
+  <div class="results-grid">
+    <div class="result-card big">
+      <h3>NMV Total 2025</h3>
+      <div class="result-big-num">356<span>B VNĐ</span></div>
+      <p class="result-desc">Chiếm 57% tổng NMV của UpBase — engine tăng trưởng chính của công ty.</p>
+      <div class="result-bar"><div class="result-bar-fill" style="width:57%"></div></div>
+    </div>
+    <div class="result-card">
+      <h3>GMV Ads TikTok / NMV</h3>
+      <div class="result-big-num" style="font-size:2.5rem">85<span>%</span></div>
+      <p class="result-desc">Tỷ lệ GMV có đóng góp từ Ads trên tổng NMV kênh TikTok.</p>
+      <div class="result-bar"><div class="result-bar-fill" style="width:85%"></div></div>
+    </div>
+    <div class="result-card">
+      <h3>GMV Ads Shopee / NMV</h3>
+      <div class="result-big-num" style="font-size:2.5rem">60<span>%</span></div>
+      <p class="result-desc">Tỷ lệ GMV Ads trên tổng NMV kênh Shopee toàn danh mục.</p>
+      <div class="result-bar"><div class="result-bar-fill" style="width:60%"></div></div>
+    </div>
+    <div class="result-card">
+      <h3>Team Growth 2025</h3>
+      <div class="result-big-num" style="font-size:2.5rem">2→<span style="-webkit-text-fill-color:unset;color:var(--accent)">12</span></div>
+      <p class="result-desc">Từ 2 lên 12 thành viên trong 8 tháng. 100% dùng Dashboard cá nhân.</p>
+    </div>
+    <div class="result-card">
+      <h3>TikTok Rebate</h3>
+      <div class="result-big-num" style="font-size:2.5rem">1B<span>4</span></div>
+      <p class="result-desc">Khoản rebate từ TikTok for Business. Trở thành Google Partner & Zalo Ads Agency.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TEAM ══ -->
+<section id="team">
+  <div class="section-header">
+    <span class="section-tag">Con người</span>
+    <h2 class="section-title">Đội ngũ Media Omni</h2>
+    <p class="section-sub">12 chuyên gia performance marketing — mỗi người một thế mạnh, một hệ thống.</p>
+  </div>
+  <div class="team-grid" id="teamGrid"></div>
+</section>
+
+<!-- ══ QUIZ PREVIEW ══ -->
+<section id="quiz-preview">
+  <div class="section-header">
+    <span class="section-tag">Knowledge Hub</span>
+    <h2 class="section-title">Quiz & Kiểm tra kiến thức</h2>
+    <p class="section-sub">Hệ thống bài kiểm tra nội bộ — đăng nhập để làm bài và xem kết quả.</p>
+  </div>
+  <div class="quiz-topics">
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">🎵</div>
+      <div>
+        <div class="quiz-topic-name">TikTok Ads</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">🛍️</div>
+      <div>
+        <div class="quiz-topic-name">Shopee Ads</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">📘</div>
+      <div>
+        <div class="quiz-topic-name">Meta Ads</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">🔍</div>
+      <div>
+        <div class="quiz-topic-name">Google Ads</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">👑</div>
+      <div>
+        <div class="quiz-topic-name">Leadership</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">🤝</div>
+      <div>
+        <div class="quiz-topic-name">Soft Skills</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">📋</div>
+      <div>
+        <div class="quiz-topic-name">SOP & Process</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+    <div class="quiz-topic-card">
+      <div class="quiz-topic-icon">🚀</div>
+      <div>
+        <div class="quiz-topic-name">Onboarding</div>
+        <div class="quiz-topic-count">Sắp có câu hỏi</div>
+      </div>
+      <span class="quiz-lock">🔒</span>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem">
+    <a href="#" class="btn-primary" onclick="openLogin(); return false;">Đăng nhập để làm bài →</a>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-logo">Media<span>Omni</span> <span style="color:var(--muted);font-weight:400;font-size:.8rem">by UpBase</span></div>
+  <div class="footer-copy">© 2026 Media Omni. One team. One vision. Breakthrough growth.</div>
+</footer>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <div class="modal-logo">Media<span>Omni</span></div>
+    <div class="modal-sub">Đăng nhập để truy cập Team Hub</div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="username" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Đăng nhập</button>
+    <div class="login-error" id="loginError">Sai username hoặc password</div>
+  </div>
+</div>
+
+<!-- ══ INTERNAL DASHBOARD ══ -->
+<div id="internal-dashboard">
+  <div class="dash-nav">
+    <div class="dash-nav-logo">Media<span>Omni</span> <span style="color:var(--muted);font-weight:400;font-size:.8rem;margin-left:.5rem">Team Hub</span></div>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <span class="dash-role-badge" id="dashRoleBadge"></span>
+      <span class="dash-user" id="dashUserName"></span>
+      <button class="dash-logout" onclick="doLogout()">Đăng xuất</button>
+    </div>
+  </div>
+  <div class="dash-content">
+    <div class="dash-title" id="dashTitle">Chào mừng trở lại 👋</div>
+    <div class="dash-welcome" id="dashWelcome"></div>
+    <div class="dash-sections" id="dashSections"></div>
+  </div>
+</div>
+
+<!-- ══ QUIZ MODULE ══ -->
+<div id="quiz-module">
+  <div class="quiz-header">
+    <button class="quiz-back" onclick="closeQuiz()">← Quay lại Dashboard</button>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem">Quiz Hub</div>
+    <div style="font-size:.8rem;color:var(--muted)" id="quizUserLabel"></div>
+  </div>
+  <div class="quiz-body">
+    <!-- Topic Picker -->
+    <div class="quiz-topic-picker" id="quizTopicPicker">
+      <h2>Chọn chủ đề</h2>
+      <p>Mỗi bài 10 câu — kết quả hiển thị ngay sau khi hoàn thành.</p>
+      <div class="picker-grid" id="pickerGrid"></div>
+    </div>
+    <!-- Active Quiz -->
+    <div class="quiz-active" id="quizActive">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill"></div></div>
+      <div class="quiz-q-num" id="quizQNum"></div>
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-explain" id="quizExplain"></div>
+      <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuestion()">Câu tiếp theo →</button>
+    </div>
+    <!-- Result -->
+    <div class="quiz-result" id="quizResult">
+      <h2>Kết quả bài thi</h2>
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-grade" id="resultGrade"></div>
+      <button class="result-retry" onclick="retryQuiz()">Làm lại</button>
+      <button class="btn-primary" onclick="backToPicker()">Chọn chủ đề khác</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ DATA ══
+const USERS = {
+  'quang':   { pass: 'omni2026', role: 'admin',  name: 'Nguyễn Đức Quảng' },
+  'khanhlinhnt': { pass: 'omni2026', role: 'member', name: 'Nguyễn Trần Khánh Linh' },
+  'duy':     { pass: 'omni2026', role: 'member', name: 'Chu Khánh Duy' },
+  'duc':     { pass: 'omni2026', role: 'member', name: 'Thiều Anh Đức' },
+  'khanhlinhd': { pass: 'omni2026', role: 'member', name: 'Đoàn Khánh Linh' },
+  'thao':    { pass: 'omni2026', role: 'member', name: 'Đỗ Phương Thảo' },
+  'hang':    { pass: 'omni2026', role: 'member', name: 'Đỗ Thị Hằng' },
+  'trung':   { pass: 'omni2026', role: 'member', name: 'Đặng Hữu Trung' },
+  'quyenanh':{ pass: 'omni2026', role: 'member', name: 'Phạm Quyền Anh' },
+  'minhkhanh':{ pass: 'omni2026', role: 'member', name: 'Nguyễn Minh Khánh' },
+  'baongoc': { pass: 'omni2026', role: 'member', name: 'Hoàng Bảo Ngọc' },
+  'maiphuong':{ pass: 'omni2026', role: 'member', name: 'Nguyễn Mai Phương' },
+  'upbase':  { pass: 'upbase2026', role: 'upbase', name: 'UpBase Staff' },
+};
+
+const TEAM = [
+  { name: 'Nguyễn Đức Quảng',      role: 'Team Leader',              isLeader: true },
+  { name: 'Nguyễn Trần Khánh Linh',role: 'Senior Performance Specialist' },
+  { name: 'Chu Khánh Duy',          role: 'Performance Specialist' },
+  { name: 'Thiều Anh Đức',          role: 'Performance Specialist' },
+  { name: 'Đoàn Khánh Linh',        role: 'Performance Specialist' },
+  { name: 'Đỗ Phương Thảo',         role: 'Performance Specialist' },
+  { name: 'Đỗ Thị Hằng',            role: 'Performance Specialist' },
+  { name: 'Đặng Hữu Trung',         role: 'Performance Specialist' },
+  { name: 'Phạm Quyền Anh',         role: 'Performance Specialist' },
+  { name: 'Nguyễn Minh Khánh',      role: 'Performance Specialist' },
+  { name: 'Hoàng Bảo Ngọc',         role: 'Performance Specialist' },
+  { name: 'Nguyễn Mai Phương',       role: 'Performance Specialist' },
+];
+
+const QUIZ_TOPICS = [
+  { id: 'tiktok',     icon: '🎵', name: 'TikTok Ads',   questions: [] },
+  { id: 'shopee',     icon: '🛍️', name: 'Shopee Ads',   questions: [] },
+  { id: 'meta',       icon: '📘', name: 'Meta Ads',      questions: [] },
+  { id: 'google',     icon: '🔍', name: 'Google Ads',    questions: [] },
+  { id: 'leadership', icon: '👑', name: 'Leadership',    questions: [] },
+  { id: 'softskills', icon: '🤝', name: 'Soft Skills',   questions: [] },
+  { id: 'sop',        icon: '📋', name: 'SOP & Process', questions: [] },
+  { id: 'onboarding', icon: '🚀', name: 'Onboarding',    questions: [] },
+];
+
+// ══ DASHBOARD CONFIG BY ROLE ══
+const DASH_CONFIG = {
+  admin: {
+    badge: 'Admin / Lead', badgeClass: 'role-admin',
+    welcome: 'Bạn có quyền truy cập toàn bộ hệ thống — quiz, kết quả team, và quản lý tài khoản.',
+    cards: [
+      { icon: '📊', title: 'Bảng điểm Team', desc: 'Xem điểm quiz của tất cả thành viên', tag: 'coming-soon', tagLabel: 'Phase 3' },
+      { icon: '📝', title: 'Quiz Hub', desc: 'Vào làm bài kiểm tra theo chủ đề', tag: 'available', tagLabel: 'Sẵn sàng', action: 'openQuiz' },
+      { icon: '👥', title: 'Quản lý thành viên', desc: 'Xem danh sách và phân quyền tài khoản', tag: 'coming-soon', tagLabel: 'Phase 3' },
+      { icon: '📚', title: 'SOP & Resources', desc: 'Tài liệu, template, checklist nội bộ', tag: 'coming-soon', tagLabel: 'Phase 4' },
+      { icon: '✏️', title: 'Quản lý Quiz', desc: 'Thêm, sửa câu hỏi cho từng chủ đề', tag: 'coming-soon', tagLabel: 'Phase 3' },
+      { icon: '📈', title: 'Analytics', desc: 'Thống kê performance quiz toàn team', tag: 'coming-soon', tagLabel: 'Phase 3' },
+    ]
+  },
+  member: {
+    badge: 'Member', badgeClass: 'role-member',
+    welcome: 'Chào mừng bạn đến Team Hub — làm bài quiz, xem kết quả và truy cập tài nguyên nội bộ.',
+    cards: [
+      { icon: '📝', title: 'Quiz Hub', desc: 'Làm bài kiểm tra kiến thức theo chủ đề', tag: 'available', tagLabel: 'Sẵn sàng', action: 'openQuiz' },
+      { icon: '📊', title: 'Kết quả của tôi', desc: 'Xem lịch sử và điểm các bài đã làm', tag: 'coming-soon', tagLabel: 'Phase 3' },
+      { icon: '📚', title: 'SOP & Resources', desc: 'Tài liệu, template, checklist nội bộ', tag: 'coming-soon', tagLabel: 'Phase 4' },
+      { icon: '🎯', title: 'OKR & Mục tiêu', desc: 'Xem OKR team và tiến độ cá nhân', tag: 'coming-soon', tagLabel: 'Phase 4' },
+    ]
+  },
+  upbase: {
+    badge: 'UpBase Staff', badgeClass: 'role-upbase',
+    welcome: 'Chào mừng bạn — bạn có thể xem năng lực team và thử quiz kiến thức marketing.',
+    cards: [
+      { icon: '📝', title: 'Quiz Kiến thức', desc: 'Thử sức với bài kiểm tra performance marketing', tag: 'available', tagLabel: 'Sẵn sàng', action: 'openQuiz' },
+      { icon: '📊', title: 'Media Omni Overview', desc: 'Tổng quan năng lực và kết quả team', tag: 'available', tagLabel: 'Xem', action: 'scrollToResults' },
+    ]
+  }
+};
+
+// ══ STATE ══
+let currentUser = null;
+let currentQuizTopic = null;
+let currentQIndex = 0;
+let score = 0;
+let answered = false;
+
+// ══ RENDER TEAM ══
+function renderTeam() {
+  const grid = document.getElementById('teamGrid');
+  grid.innerHTML = TEAM.map(m => {
+    const initials = m.name.split(' ').slice(-2).map(w => w[0]).join('');
+    return `
+    <div class="team-card ${m.isLeader ? 'leader' : ''}">
+      <div class="team-avatar">${initials}</div>
+      <div class="team-name">${m.name}</div>
+      <div class="team-role">${m.role}</div>
+      <span class="team-badge ${m.isLeader ? 'badge-leader' : 'badge-member'}">
+        ${m.isLeader ? '★ Leader' : 'Member'}
+      </span>
+    </div>`;
+  }).join('');
+}
+
+// ══ LOGIN ══
+function openLogin() {
+  document.getElementById('loginModal').classList.add('active');
+  setTimeout(() => document.getElementById('loginUser').focus(), 100);
+}
+function closeLogin() {
+  document.getElementById('loginModal').classList.remove('active');
+  document.getElementById('loginError').style.display = 'none';
+}
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const user = USERS[u];
+  if (user && user.pass === p) {
+    currentUser = { username: u, ...user };
+    closeLogin();
+    showDashboard();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+function doLogout() {
+  currentUser = null;
+  document.getElementById('internal-dashboard').style.display = 'none';
+  document.getElementById('quiz-module').style.display = 'none';
+}
+
+// ══ DASHBOARD ══
+function showDashboard() {
+  const dash = document.getElementById('internal-dashboard');
+  const cfg = DASH_CONFIG[currentUser.role];
+  document.getElementById('dashRoleBadge').textContent = cfg.badge;
+  document.getElementById('dashRoleBadge').className = `dash-role-badge ${cfg.badgeClass}`;
+  document.getElementById('dashUserName').textContent = currentUser.name;
+  document.getElementById('dashTitle').textContent = `Xin chào, ${currentUser.name.split(' ').pop()} 👋`;
+  document.getElementById('dashWelcome').textContent = cfg.welcome;
+  document.getElementById('dashSections').innerHTML = cfg.cards.map(c => `
+    <div class="dash-card" onclick="${c.action ? c.action + '()' : ''}">
+      <div class="dash-card-icon">${c.icon}</div>
+      <h3>${c.title}</h3>
+      <p>${c.desc}</p>
+      <span class="${c.tag}">${c.tagLabel}</span>
+    </div>
+  `).join('');
+  dash.style.display = 'block';
+}
+
+function scrollToResults() {
+  document.getElementById('internal-dashboard').style.display = 'none';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ══ QUIZ ══
+function openQuiz() {
+  document.getElementById('quiz-module').style.display = 'block';
+  document.getElementById('quizUserLabel').textContent = currentUser.name;
+  showTopicPicker();
+}
+function closeQuiz() {
+  document.getElementById('quiz-module').style.display = 'none';
+}
+
+function showTopicPicker() {
+  document.getElementById('quizTopicPicker').style.display = 'block';
+  document.getElementById('quizActive').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'none';
+  const grid = document.getElementById('pickerGrid');
+  grid.innerHTML = QUIZ_TOPICS.map(t => `
+    <div class="picker-card" onclick="startQuiz('${t.id}')">
+      <div class="pic-icon">${t.icon}</div>
+      <div class="pic-name">${t.name}</div>
+      <div class="pic-status">${t.questions.length > 0 ? t.questions.length + ' câu hỏi' : 'Sắp có nội dung'}</div>
+    </div>
+  `).join('');
+}
+
+function startQuiz(topicId) {
+  const topic = QUIZ_TOPICS.find(t => t.id === topicId);
+  if (!topic || topic.questions.length === 0) {
+    alert(`Chủ đề "${topic.name}" chưa có câu hỏi. Admin sẽ cập nhật sớm!`);
+    return;
+  }
+  currentQuizTopic = topic;
+  currentQIndex = 0;
+  score = 0;
+  document.getElementById('quizTopicPicker').style.display = 'none';
+  document.getElementById('quizActive').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = currentQuizTopic.questions[currentQIndex];
+  const total = currentQuizTopic.questions.length;
+  const pct = ((currentQIndex) / total * 100).toFixed(0);
+  document.getElementById('quizProgressFill').style.width = pct + '%';
+  document.getElementById('quizQNum').textContent = `Câu ${currentQIndex + 1} / ${total} — ${currentQuizTopic.name}`;
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizExplain').style.display = 'none';
+  document.getElementById('quizNextBtn').style.display = 'none';
+  answered = false;
+  document.getElementById('quizOptions').innerHTML = q.opts.map((opt, i) => `
+    <button class="quiz-option" onclick="selectAnswer(${i})">${opt}</button>
+  `).join('');
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = currentQuizTopic.questions[currentQIndex];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === idx && idx !== q.ans) btn.classList.add('wrong');
+  });
+  if (idx === q.ans) score++;
+  if (q.explain) {
+    const ex = document.getElementById('quizExplain');
+    ex.textContent = '💡 ' + q.explain;
+    ex.style.display = 'block';
+  }
+  const nextBtn = document.getElementById('quizNextBtn');
+  nextBtn.style.display = 'block';
+  const isLast = currentQIndex === currentQuizTopic.questions.length - 1;
+  nextBtn.textContent = isLast ? 'Xem kết quả →' : 'Câu tiếp theo →';
+}
+
+function nextQuestion() {
+  currentQIndex++;
+  if (currentQIndex >= currentQuizTopic.questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizActive').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const total = currentQuizTopic.questions.length;
+  const pct = Math.round(score / total * 100);
+  document.getElementById('resultScore').textContent = `${score}/${total}`;
+  let grade = '';
+  if (pct >= 90) grade = '🏆 Xuất sắc! Bạn nắm rất vững chủ đề này.';
+  else if (pct >= 70) grade = '✅ Tốt! Còn một vài điểm cần ôn thêm.';
+  else if (pct >= 50) grade = '📚 Trung bình — hãy xem lại SOP và thử lại.';
+  else grade = '💪 Cần cải thiện — đọc thêm tài liệu và làm lại nhé.';
+  document.getElementById('resultGrade').textContent = grade;
+  document.getElementById('quizProgressFill').style.width = '100%';
+
+  // Save to localStorage
+  const key = `quiz_${currentUser.username}_${currentQuizTopic.id}`;
+  const record = { score, total, pct, date: new Date().toLocaleDateString('vi-VN'), topic: currentQuizTopic.name };
+  localStorage.setItem(key, JSON.stringify(record));
+}
+
+function retryQuiz() {
+  currentQIndex = 0; score = 0;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizActive').style.display = 'block';
+  renderQuestion();
+}
+function backToPicker() { showTopicPicker(); }
+
+// ══ SCROLL ANIMATION FOR BARS ══
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.result-bar-fill').forEach(bar => {
+        bar.style.animationPlayState = 'running';
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('#results').forEach(el => observer.observe(el));
+
+// ══ INIT ══
+renderTeam();
+</script>
+</body>
+</html>
