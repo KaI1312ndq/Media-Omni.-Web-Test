@@ -8,485 +8,515 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary:     #2563EB;
-  --primary-bright: #3B82F6;
-  --soft-blue:   #DBEAFE;
-  --pale-sky:    #EFF6FF;
-  --navy:        #0F172A;
-  --slate:       #64748B;
-  --border:      #E2EAFF;
-  --white:       #FFFFFF;
-  --accent:      #FF5A2A;
-  --success:     #10B981;
-  --error:       #EF4444;
-  --shadow-sm:   0 2px 8px rgba(15,23,42,0.06);
-  --shadow-md:   0 4px 24px rgba(15,23,42,0.08);
-  --shadow-lg:   0 8px 40px rgba(15,23,42,0.12);
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   16px;
-  --radius-xl:   24px;
+/* ═══ TOKENS ═══ */
+:root{
+  --primary:#2563EB;--primary-bright:#3B82F6;--primary-dark:#1D4ED8;
+  --soft-blue:#DBEAFE;--pale-sky:#EFF6FF;
+  --navy:#0F172A;--slate:#64748B;
+  --border:#E2EAFF;--border-h:#BFCFFF;
+  --white:#FFFFFF;--accent:#FF5A2A;
+  --success:#10B981;--error:#EF4444;
+  --shadow-xs:0 1px 4px rgba(15,23,42,.05);
+  --shadow-sm:0 2px 8px rgba(15,23,42,.07);
+  --shadow-md:0 4px 24px rgba(15,23,42,.09);
+  --shadow-lg:0 8px 40px rgba(15,23,42,.13);
+  --shadow-xl:0 16px 64px rgba(15,23,42,.16);
+  --shadow-blue:0 8px 32px rgba(37,99,235,.22);
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;
+  --ease-expo:cubic-bezier(.16,1,.3,1);
+  --ease-back:cubic-bezier(.34,1.56,.64,1);
+  --ease-out:cubic-bezier(.4,0,.2,1);
 }
 
+/* ═══ RESET ═══ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--white);color:var(--navy);overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
+svg{display:block}
 
-/* ── UTILS ── */
+/* ═══ SCROLL PROGRESS ═══ */
+#sp{position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;
+  background:linear-gradient(90deg,var(--primary),#6366f1,var(--primary-bright));
+  border-radius:0 2px 2px 0;transition:width .08s linear}
+
+/* ═══ UTILS ═══ */
 .container{max-width:1200px;margin:0 auto;padding:0 24px}
-.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);background:var(--soft-blue);padding:.3rem .75rem;border-radius:999px;margin-bottom:1rem}
-.fade-up{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
-.fade-up.visible{opacity:1;transform:translateY(0)}
+.tag{display:inline-flex;align-items:center;gap:.4rem;font-size:11px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--primary);
+  background:var(--soft-blue);padding:.3rem .85rem;border-radius:999px;
+  margin-bottom:1rem;border:1px solid rgba(37,99,235,.15)}
 
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  transition:box-shadow .3s;
-}
+/* ═══ REVEAL SYSTEM ═══ */
+.rv{opacity:0;transform:translateY(32px);transition:opacity .7s var(--ease-expo),transform .7s var(--ease-expo)}
+.rv-l{opacity:0;transform:translateX(-44px);transition:opacity .7s var(--ease-expo),transform .7s var(--ease-expo)}
+.rv-r{opacity:0;transform:translateX(44px);transition:opacity .7s var(--ease-expo),transform .7s var(--ease-expo)}
+.rv-s{opacity:0;transform:scale(.88);transition:opacity .6s var(--ease-back),transform .6s var(--ease-back)}
+.rv.on,.rv-l.on,.rv-r.on,.rv-s.on{opacity:1;transform:none}
+.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
+.d4{transition-delay:.28s}.d5{transition-delay:.35s}.d6{transition-delay:.42s}
+.d7{transition-delay:.49s}.d8{transition-delay:.56s}
+
+/* ═══ NAV ═══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;
+  background:rgba(255,255,255,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);transition:box-shadow .3s;
+  animation:navIn .6s var(--ease-expo) both}
+@keyframes navIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
 nav.scrolled{box-shadow:var(--shadow-md)}
-.nav-inner{
-  max-width:1200px;margin:0 auto;padding:0 24px;
-  height:68px;display:flex;align-items:center;justify-content:space-between;
-}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo-upbase{
-  background:var(--accent);color:#fff;
-  font-weight:800;font-size:.8rem;
-  padding:4px 8px;border-radius:6px;letter-spacing:.02em;
-}
-.nav-logo-divider{width:1px;height:20px;background:var(--border)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:68px;
+  display:flex;align-items:center;justify-content:space-between;position:relative}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-u{background:var(--accent);color:#fff;font-weight:800;font-size:.75rem;
+  padding:4px 9px;border-radius:6px;letter-spacing:.04em;
+  transition:transform .2s var(--ease-back)}
+.nav-logo:hover .nav-logo-u{transform:rotate(-4deg) scale(1.08)}
+.nav-logo-div{width:1px;height:20px;background:var(--border)}
 .nav-logo-name{font-weight:800;font-size:1rem;color:var(--navy)}
 .nav-logo-name span{color:var(--primary)}
-.nav-links{display:flex;align-items:center;gap:2rem}
-.nav-links a{
-  font-size:.875rem;font-weight:600;color:var(--slate);
-  text-decoration:none;transition:color .2s;position:relative;padding-bottom:2px;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;
-  background:var(--primary);border-radius:2px;
-  transform:scaleX(0);transition:transform .25s ease;
-}
-.nav-links a:hover,
-.nav-links a.active{color:var(--primary)}
-.nav-links a:hover::after,
-.nav-links a.active::after{transform:scaleX(1)}
-.nav-cta{
-  background:var(--primary);color:#fff !important;
-  padding:.6rem 1.25rem;border-radius:var(--radius-sm);
-  font-weight:700;font-size:.875rem;
-  transition:background .2s,transform .2s;
-  display:flex;align-items:center;gap:.4rem;
-  text-decoration:none;
-}
-.nav-cta:hover{background:var(--primary-bright);transform:translateY(-1px)}
-.nav-cta::after{display:none !important}
-.nav-mobile-toggle{display:none;background:none;border:none;cursor:pointer;padding:.5rem}
-.nav-mobile-toggle span{display:block;width:22px;height:2px;background:var(--navy);margin:4px 0;transition:.3s;border-radius:2px}
-
-/* ── HERO ── */
-#hero{
-  min-height:100vh;padding:100px 0 60px;
-  display:flex;align-items:center;
-  background:linear-gradient(135deg,#fff 0%,var(--pale-sky) 100%);
-  position:relative;overflow:hidden;
-}
-#hero::before{
-  content:'';position:absolute;
-  top:-200px;right:-200px;
-  width:700px;height:700px;
-  background:radial-gradient(circle,rgba(37,99,235,.08) 0%,transparent 70%);
-}
-.hero-inner{
-  max-width:1200px;margin:0 auto;padding:0 24px;
-  display:grid;grid-template-columns:52% 48%;gap:3rem;align-items:center;
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:.5rem;
-  background:var(--soft-blue);border:1px solid rgba(37,99,235,.2);
-  border-radius:999px;padding:.4rem 1rem;
-  font-size:.75rem;font-weight:700;color:var(--primary);
-  letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.5rem;
-  animation:fadeUp .7s ease both;
-}
-.hero-badge::before{content:'●';color:var(--success);font-size:.5rem}
-h1.hero-title{
-  font-size:clamp(2.5rem,5vw,3.75rem);font-weight:800;
-  letter-spacing:-.03em;line-height:1.05;margin-bottom:1.25rem;
-  animation:fadeUp .7s .1s ease both;
-}
-.hero-title .highlight{
-  background:linear-gradient(135deg,var(--primary) 0%,#6366f1 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;
-}
-.hero-sub{
-  font-size:1.05rem;color:var(--slate);max-width:480px;
-  margin-bottom:2rem;font-weight:400;line-height:1.7;
-  animation:fadeUp .7s .2s ease both;
-}
-.hero-actions{
-  display:flex;gap:.875rem;flex-wrap:wrap;margin-bottom:2.5rem;
-  animation:fadeUp .7s .3s ease both;
-}
-.btn-primary{
-  background:var(--primary);color:#fff;border:none;cursor:pointer;
-  padding:.875rem 1.75rem;border-radius:var(--radius-sm);
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:700;
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:.84rem;font-weight:600;color:var(--slate);
+  position:relative;padding-bottom:3px;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;
+  background:var(--primary);border-radius:2px;transform:scaleX(0);transform-origin:left;
+  transition:transform .25s var(--ease-expo)}
+.nav-links a:hover,.nav-links a.active{color:var(--primary)}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.nav-cta{background:var(--primary);color:#fff !important;
+  padding:.55rem 1.1rem;border-radius:var(--r-sm);font-weight:700;font-size:.82rem;
+  display:inline-flex;align-items:center;gap:.35rem;
   transition:background .2s,transform .2s,box-shadow .2s;
-  text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
-}
-.btn-primary:hover{background:var(--primary-bright);transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,99,235,.25)}
-.btn-ghost{
-  background:transparent;color:var(--navy);
-  border:1.5px solid var(--border);cursor:pointer;
-  padding:.875rem 1.75rem;border-radius:var(--radius-sm);
+  position:relative;overflow:hidden}
+.nav-cta::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);
+  transform:translateX(-100%);transition:transform .5s}
+.nav-cta:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:var(--shadow-blue)}
+.nav-cta:hover::before{transform:translateX(100%)}
+.nav-cta::after{display:none !important}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:.5rem;flex-direction:column;gap:5px}
+.nav-toggle span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;
+  transition:transform .3s,opacity .3s,width .3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0;width:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-mob{display:none;position:absolute;top:68px;left:0;right:0;
+  background:rgba(255,255,255,.98);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);box-shadow:var(--shadow-lg);
+  padding:1rem 1.5rem 1.5rem;flex-direction:column;gap:.25rem}
+.nav-mob.open{display:flex;animation:mobMenuIn .3s var(--ease-expo)}
+@keyframes mobMenuIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.nav-mob a{font-size:.9rem;font-weight:600;color:var(--slate);
+  padding:.6rem 0;border-bottom:1px solid var(--border);
+  transition:color .2s,padding-left .2s}
+.nav-mob a:last-child{border-bottom:none}
+.nav-mob a:hover{color:var(--primary);padding-left:.5rem}
+.mob-overlay{display:none;position:fixed;inset:0;z-index:490;
+  background:rgba(15,23,42,.3);backdrop-filter:blur(2px)}
+.mob-overlay.open{display:block}
+
+/* ═══ HERO ═══ */
+#hero{min-height:100vh;padding:100px 0 72px;display:flex;align-items:center;
+  background:#fff;position:relative;overflow:hidden}
+#hero::before{content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(37,99,235,.08) 1px,transparent 1px);
+  background-size:28px 28px;animation:dotDrift 22s linear infinite}
+@keyframes dotDrift{to{background-position:28px 28px}}
+.h-blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.h-blob-1{width:600px;height:600px;top:-160px;right:-120px;
+  background:radial-gradient(circle,rgba(37,99,235,.07) 0%,transparent 70%);
+  animation:blob1 14s ease-in-out infinite alternate}
+.h-blob-2{width:400px;height:400px;bottom:-100px;left:-60px;
+  background:radial-gradient(circle,rgba(99,102,241,.06) 0%,transparent 70%);
+  animation:blob2 18s ease-in-out infinite alternate}
+@keyframes blob1{from{transform:scale(1) rotate(0deg)}to{transform:scale(1.12) rotate(15deg)}}
+@keyframes blob2{from{transform:scale(1.05) rotate(0deg)}to{transform:scale(.92) rotate(-12deg)}}
+.hero-inner{max-width:1200px;margin:0 auto;padding:0 24px;
+  display:grid;grid-template-columns:52% 48%;gap:3rem;align-items:center;position:relative;z-index:1}
+
+/* Hero text animations */
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--soft-blue);border:1px solid rgba(37,99,235,.2);
+  border-radius:999px;padding:.4rem 1.1rem;
+  font-size:.72rem;font-weight:700;color:var(--primary);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem;
+  opacity:0;animation:hItem .7s .1s var(--ease-expo) forwards}
+.badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--success);flex-shrink:0;
+  animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.7);opacity:.55}}
+h1.hero-title{font-size:clamp(2.6rem,5vw,3.9rem);font-weight:800;
+  letter-spacing:-.03em;line-height:1.06;margin-bottom:1.25rem}
+.hero-line{display:block;overflow:hidden}
+.hero-line-in{display:block;opacity:0;transform:translateY(100%);
+  animation:lineUp .8s var(--ease-expo) forwards}
+.li-d1{animation-delay:.2s}.li-d2{animation-delay:.33s}.li-d3{animation-delay:.46s}
+@keyframes lineUp{to{opacity:1;transform:none}}
+.highlight{background:linear-gradient(135deg,var(--primary) 0%,#6366f1 50%,var(--primary-bright) 100%);
+  background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:gradShift 4s ease infinite}
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-sub{font-size:1.05rem;color:var(--slate);max-width:490px;margin-bottom:2rem;
+  font-weight:400;line-height:1.75;opacity:0;animation:hItem .7s .6s var(--ease-expo) forwards}
+.hero-actions{display:flex;gap:.875rem;flex-wrap:wrap;margin-bottom:2.5rem;
+  opacity:0;animation:hItem .7s .72s var(--ease-expo) forwards}
+.hero-badges{display:flex;gap:.65rem;flex-wrap:wrap;
+  opacity:0;animation:hItem .7s .86s var(--ease-expo) forwards}
+@keyframes hItem{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* Buttons */
+.btn-p{background:var(--primary);color:#fff;border:none;cursor:pointer;
+  padding:.875rem 1.75rem;border-radius:var(--r-sm);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:700;
+  display:inline-flex;align-items:center;gap:.5rem;position:relative;overflow:hidden;
+  transition:background .2s,transform .2s,box-shadow .2s}
+.btn-p::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);
+  transform:translateX(-100%);transition:transform .55s}
+.btn-p:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:var(--shadow-blue)}
+.btn-p:hover::after{transform:translateX(100%)}
+.btn-g{background:transparent;color:var(--navy);border:1.5px solid var(--border);cursor:pointer;
+  padding:.875rem 1.75rem;border-radius:var(--r-sm);
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:600;
-  transition:border-color .2s,background .2s;
-  text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
-}
-.btn-ghost:hover{border-color:var(--primary);background:var(--pale-sky)}
-.hero-badges{
-  display:flex;gap:.75rem;flex-wrap:wrap;
-  animation:fadeUp .7s .4s ease both;
-}
-.hero-pill{
-  display:inline-flex;align-items:center;gap:.4rem;
-  background:var(--white);border:1px solid var(--border);
-  border-radius:999px;padding:.35rem .9rem;
-  font-size:.78rem;font-weight:600;color:var(--slate);
-  box-shadow:var(--shadow-sm);
-}
+  display:inline-flex;align-items:center;gap:.5rem;
+  transition:border-color .2s,background .2s,transform .2s,color .2s}
+.btn-g:hover{border-color:var(--primary);background:var(--pale-sky);color:var(--primary);transform:translateY(-2px)}
+
+.hero-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--white);
+  border:1px solid var(--border);border-radius:999px;padding:.32rem .9rem;
+  font-size:.76rem;font-weight:600;color:var(--slate);box-shadow:var(--shadow-xs);
+  transition:border-color .2s,box-shadow .2s,transform .2s,color .2s}
+.hero-pill:hover{border-color:var(--primary);color:var(--primary);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
 .hero-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--primary)}
 
-/* HERO VISUAL */
-.hero-visual{position:relative;animation:fadeUp .7s .2s ease both}
-.dashboard-mockup{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius-xl);padding:1.5rem;
-  box-shadow:var(--shadow-lg);position:relative;
-}
-.dash-header{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:1.25rem;
-}
-.dash-title-text{font-size:.8rem;font-weight:700;color:var(--navy)}
-.dash-badge-pill{
-  font-size:.7rem;font-weight:600;color:var(--slate);
-  background:var(--pale-sky);padding:.2rem .6rem;border-radius:999px;
-}
+/* Hero visual */
+.hero-visual{position:relative;opacity:0;animation:dashIn .9s .55s var(--ease-expo) forwards}
+@keyframes dashIn{from{opacity:0;transform:translateX(48px) scale(.95)}to{opacity:1;transform:none}}
+.dash-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:1.5rem;box-shadow:var(--shadow-xl);position:relative;
+  transition:transform .4s var(--ease-expo),box-shadow .4s}
+.dash-wrap:hover{transform:translateY(-5px) scale(1.01);box-shadow:0 24px 72px rgba(15,23,42,.17)}
+.dash-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.dash-hdr-t{font-size:.8rem;font-weight:700;color:var(--navy)}
+.dash-pill{font-size:.68rem;font-weight:600;color:var(--slate);background:var(--pale-sky);
+  padding:.2rem .65rem;border-radius:999px;border:1px solid var(--border)}
 .dash-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.25rem}
-.dash-metric{
-  background:var(--pale-sky);border-radius:var(--radius-md);padding:1rem;
-}
-.dash-metric-label{font-size:.65rem;font-weight:600;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
-.dash-metric-val{font-size:1.5rem;font-weight:800;color:var(--navy);line-height:1}
-.dash-metric-sub{font-size:.65rem;color:var(--success);font-weight:600;margin-top:.2rem}
-.dash-chart{
-  background:var(--pale-sky);border-radius:var(--radius-md);
-  padding:1rem;height:80px;position:relative;overflow:hidden;margin-bottom:1rem;
-}
-.chart-line{
-  position:absolute;bottom:15px;left:16px;right:16px;
-  height:40px;
-}
-.chart-line svg{width:100%;height:100%}
-.dash-platforms{display:flex;gap:.5rem;flex-wrap:wrap}
-.plat-icon{
-  width:32px;height:32px;border-radius:var(--radius-sm);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;border:1px solid var(--border);background:var(--white);
-  box-shadow:var(--shadow-sm);
-}
-.float-card{
-  position:absolute;background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius-md);padding:.75rem 1rem;
-  box-shadow:var(--shadow-md);font-size:.78rem;
-}
-.float-card-top{top:-16px;right:20px;display:flex;align-items:center;gap:.5rem}
-.float-card-bot{bottom:-16px;left:20px;display:flex;align-items:center;gap:.5rem}
+.dash-m{background:var(--pale-sky);border-radius:var(--r-md);padding:1rem;
+  border:1px solid var(--border);transition:all .2s}
+.dash-m:hover{background:var(--soft-blue);transform:translateY(-2px)}
+.dm-lbl{font-size:.62rem;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
+.dm-val{font-size:1.5rem;font-weight:800;color:var(--navy);line-height:1}
+.dm-sub{font-size:.62rem;color:var(--success);font-weight:700;margin-top:.3rem}
+.dash-chart{background:var(--pale-sky);border-radius:var(--r-md);padding:1rem;
+  height:76px;position:relative;overflow:hidden;margin-bottom:1rem;border:1px solid var(--border)}
+.c-svg{width:100%;height:100%;overflow:visible}
+.c-line{stroke:#2563EB;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;fill:none;
+  stroke-dasharray:400;stroke-dashoffset:400;animation:drawLine 2.2s .8s var(--ease-expo) forwards}
+.c-fill{fill:url(#cGrad);opacity:0;animation:fillIn 1.5s 1.5s ease forwards}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+@keyframes fillIn{to{opacity:.18}}
+.dash-plats{display:flex;gap:.5rem;flex-wrap:wrap}
+.plat-ic{width:34px;height:34px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);background:var(--white);box-shadow:var(--shadow-xs);cursor:pointer;overflow:hidden;
+  transition:transform .2s var(--ease-back),box-shadow .2s,border-color .2s}
+.plat-ic:hover{transform:scale(1.18) translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--border-h)}
+.plat-ic svg{width:18px;height:18px}
+
+/* Float cards */
+.fc{position:absolute;background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r-md);padding:.75rem 1rem;box-shadow:var(--shadow-md);
+  font-size:.78rem;display:flex;align-items:center;gap:.5rem;
+  transition:box-shadow .3s}
+.fc:hover{box-shadow:var(--shadow-lg)}
+.fc-t{top:-18px;right:16px;opacity:0;
+  animation:fcIn .6s 1.3s var(--ease-back) forwards,floatUp 3s 2s ease-in-out infinite alternate}
+.fc-b{bottom:-18px;left:16px;opacity:0;
+  animation:fcIn .6s 1.5s var(--ease-back) forwards,floatDn 3.5s 2.5s ease-in-out infinite alternate}
+@keyframes fcIn{from{opacity:0;transform:scale(.78)}to{opacity:1;transform:none}}
+@keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+@keyframes floatDn{from{transform:translateY(0)}to{transform:translateY(8px)}}
 .fc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.fc-label{font-weight:600;color:var(--navy);font-size:.75rem}
+.fc-lbl{font-weight:600;color:var(--navy);font-size:.74rem}
 .fc-val{font-weight:800;color:var(--primary)}
 
-/* ── NUMBERS ── */
+/* ═══ NUMBERS ═══ */
 #numbers{padding:80px 0;background:var(--white);border-top:1px solid var(--border)}
-.numbers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-.number-cell{
-  background:var(--white);padding:2.5rem 2rem;text-align:center;
-  transition:background .2s;position:relative;
-}
-.number-cell:hover{background:var(--pale-sky)}
-.number-icon{font-size:1.75rem;margin-bottom:.75rem;display:block}
-.number-val{
-  font-size:2.5rem;font-weight:800;letter-spacing:-.03em;
-  color:var(--primary);display:block;line-height:1;margin-bottom:.5rem;
-}
-.number-label{font-size:.8rem;color:var(--slate);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
-.number-context{font-size:.75rem;color:var(--primary-bright);font-weight:600}
-
-/* ── SERVICES ── */
-#services{padding:96px 0;background:var(--pale-sky)}
-.section-header{margin-bottom:3rem}
-.section-title{font-size:clamp(1.75rem,3vw,2.25rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.75rem;line-height:1.15}
-.section-sub{font-size:1rem;color:var(--slate);max-width:480px;font-weight:400}
-.services-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
-.service-card{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:1.75rem 1.5rem;
-  transition:transform .25s,box-shadow .25s,border-color .25s;
-  position:relative;overflow:hidden;
-}
-.service-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+.num-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.num-cell{background:var(--white);padding:2.5rem 2rem;text-align:center;
+  transition:background .25s;position:relative;cursor:default}
+.num-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--primary),#6366f1);
-  transform:scaleX(0);transform-origin:left;transition:transform .3s;
-}
-.service-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:rgba(37,99,235,.2)}
-.service-card:hover::before{transform:scaleX(1)}
-.service-logo{
-  width:48px;height:48px;border-radius:var(--radius-md);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;margin-bottom:1.25rem;
-  border:1px solid var(--border);background:var(--pale-sky);
-}
-.service-card h3{font-size:.95rem;font-weight:700;margin-bottom:.5rem;color:var(--navy)}
-.service-card p{font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:1rem}
-.service-tags{display:flex;flex-wrap:wrap;gap:.35rem}
-.service-tag-chip{
-  font-size:.65rem;font-weight:700;letter-spacing:.04em;
-  padding:.2rem .55rem;border-radius:999px;
-  background:var(--soft-blue);color:var(--primary);
-}
+  transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease-expo)}
+.num-cell:hover{background:var(--pale-sky)}
+.num-cell:hover::after{transform:scaleX(1)}
+.num-cell:hover .num-icon{animation:iconBnc .4s var(--ease-back)}
+@keyframes iconBnc{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.num-icon{font-size:1.75rem;margin-bottom:.75rem;display:block;line-height:1}
+.num-val{font-size:2.6rem;font-weight:800;letter-spacing:-.04em;color:var(--primary);
+  display:block;line-height:1;margin-bottom:.5rem}
+.num-lbl{font-size:.78rem;color:var(--slate);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
+.num-ctx{font-size:.73rem;color:var(--primary-bright);font-weight:600}
 
-/* ── RESULTS ── */
+/* ═══ SECTION HEADER ═══ */
+.sec-hdr{margin-bottom:3rem}
+.sec-title{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;
+  letter-spacing:-.03em;margin-bottom:.75rem;line-height:1.15}
+.sec-sub{font-size:1rem;color:var(--slate);max-width:490px;font-weight:400;line-height:1.7}
+
+/* ═══ SERVICES ═══ */
+#services{padding:96px 0;background:var(--pale-sky)}
+.svc-row1{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.svc-row2{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:67%;margin:0 auto}
+.svc-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:1.75rem 1.5rem;position:relative;overflow:hidden;cursor:default;
+  transition:transform .3s var(--ease-expo),box-shadow .3s,border-color .3s}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease-expo)}
+.c-tiktok::before{background:linear-gradient(90deg,#010101,#69C9D0)}
+.c-shopee::before{background:linear-gradient(90deg,#EE4D2D,#FF7850)}
+.c-meta::before{background:linear-gradient(90deg,#0866FF,#23A5FF)}
+.c-google::before{background:linear-gradient(90deg,#4285F4,#FBBC05,#34A853,#EA4335)}
+.c-omni::before{background:linear-gradient(90deg,var(--primary),#6366f1)}
+.svc-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:rgba(37,99,235,.2)}
+.svc-card:hover::before{transform:scaleX(1)}
+.svc-card:hover .svc-logo{transform:rotate(8deg) scale(1.12)}
+.svc-card:hover .svc-chip{background:var(--primary);color:#fff}
+.svc-logo{width:50px;height:50px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.25rem;border:1px solid var(--border);background:var(--pale-sky);
+  transition:transform .3s var(--ease-back);overflow:hidden}
+.svc-logo svg{width:26px;height:26px}
+.svc-card h3{font-size:.95rem;font-weight:700;margin-bottom:.5rem;color:var(--navy)}
+.svc-card p{font-size:.8rem;color:var(--slate);line-height:1.65;margin-bottom:1rem}
+.svc-tags{display:flex;flex-wrap:wrap;gap:.35rem}
+.svc-chip{font-size:.64rem;font-weight:700;letter-spacing:.04em;padding:.2rem .58rem;
+  border-radius:999px;background:var(--soft-blue);color:var(--primary);transition:background .2s,color .2s}
+
+/* ═══ RESULTS ═══ */
 #results{padding:96px 0;background:var(--white)}
-.results-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem}
-.results-link{font-size:.875rem;font-weight:700;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:.35rem}
-.results-link:hover{text-decoration:underline}
-.results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
-.case-card{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius-lg);overflow:hidden;
-  transition:transform .25s,box-shadow .25s;
-}
-.case-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
-.case-card-header{
-  padding:1.5rem;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.case-category{
-  font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  padding:.25rem .65rem;border-radius:999px;
-}
-.cat-beauty{background:rgba(236,72,153,.1);color:#db2777}
-.cat-health{background:rgba(245,158,11,.1);color:#d97706}
-.cat-skincare{background:rgba(16,185,129,.1);color:#059669}
-.cat-intimate{background:rgba(99,102,241,.1);color:#4f46e5}
-.case-brand{font-size:1.1rem;font-weight:800;color:var(--navy)}
-.case-body{padding:1.5rem}
-.case-service{font-size:.8rem;color:var(--slate);margin-bottom:1rem;line-height:1.5}
-.case-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
-.case-metric{text-align:center;padding:.875rem .5rem;background:var(--pale-sky);border-radius:var(--radius-md)}
-.case-metric-val{font-size:1.3rem;font-weight:800;color:var(--primary);line-height:1;display:block}
-.case-metric-val.green{color:var(--success)}
-.case-metric-val.orange{color:var(--accent)}
-.case-metric-label{font-size:.65rem;color:var(--slate);font-weight:600;margin-top:.25rem;display:block;text-transform:uppercase;letter-spacing:.04em}
-.case-footer{padding:.875rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.5rem;flex-wrap:wrap}
-.case-chip{font-size:.7rem;font-weight:600;color:var(--slate);background:var(--pale-sky);padding:.25rem .6rem;border-radius:999px}
+.res-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem}
+.res-link{font-size:.875rem;font-weight:700;color:var(--primary);
+  display:flex;align-items:center;gap:.35rem;transition:gap .2s}
+.res-link:hover{gap:.65rem}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.case-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);
+  overflow:hidden;transition:transform .3s var(--ease-expo),box-shadow .3s}
+.case-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.case-card:hover .case-chip{background:var(--soft-blue);color:var(--primary);border-color:rgba(37,99,235,.2)}
+.case-card:hover .cm-val{transform:scale(1.06)}
+.cc-hdr{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between}
+.cc-cat{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.25rem .7rem;border-radius:999px}
+.cat-beauty{background:rgba(236,72,153,.1);color:#be185d}
+.cat-health{background:rgba(245,158,11,.1);color:#b45309}
+.cat-skin{background:rgba(16,185,129,.1);color:#047857}
+.cat-inti{background:rgba(99,102,241,.1);color:#4338ca}
+.cc-brand{font-size:1.05rem;font-weight:800;color:var(--navy)}
+.cc-body{padding:1.5rem}
+.cc-svc{font-size:.78rem;color:var(--slate);margin-bottom:1rem;line-height:1.6}
+.cm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.cm-cell{text-align:center;padding:.875rem .5rem;background:var(--pale-sky);
+  border-radius:var(--r-md);border:1px solid var(--border);
+  transition:background .2s}
+.case-card:hover .cm-cell{background:var(--soft-blue)}
+.cm-val{font-size:1.3rem;font-weight:800;color:var(--primary);
+  line-height:1;display:block;transition:transform .2s var(--ease-back)}
+.green{color:var(--success)}.orange{color:var(--accent)}
+.cm-lbl{font-size:.62rem;color:var(--slate);font-weight:600;
+  margin-top:.3rem;display:block;text-transform:uppercase;letter-spacing:.04em}
+.cc-ftr{padding:.875rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.5rem;flex-wrap:wrap}
+.case-chip{font-size:.68rem;font-weight:600;color:var(--slate);
+  background:var(--pale-sky);padding:.25rem .65rem;border-radius:999px;
+  border:1px solid var(--border);transition:background .2s,color .2s,border-color .2s}
 
-/* ── TEAM ── */
+/* ═══ TEAM ═══ */
 #team{padding:96px 0;background:var(--pale-sky)}
-.team-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem}
-.team-scroll-wrap{overflow-x:auto;padding-bottom:1rem;scrollbar-width:none}
-.team-scroll-wrap::-webkit-scrollbar{display:none}
-.team-scroll{display:flex;gap:1rem;width:max-content;padding:4px}
-.team-card{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:1.5rem;
-  width:160px;flex-shrink:0;text-align:center;
-  transition:transform .25s,box-shadow .25s,border-color .25s;
-}
-.team-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:rgba(37,99,235,.25)}
-.team-avatar{
-  width:64px;height:64px;border-radius:50%;
-  margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:1.2rem;color:#fff;
-}
-.avatar-leader{background:linear-gradient(135deg,var(--accent) 0%,#f97316 100%);box-shadow:0 4px 16px rgba(255,90,42,.25)}
-.avatar-member{background:linear-gradient(135deg,var(--primary) 0%,#6366f1 100%)}
-.team-name{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:.3rem;line-height:1.3}
-.team-role-text{font-size:.72rem;color:var(--slate);font-weight:500;margin-bottom:.75rem}
-.team-badge-pill{
-  display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.06em;
-  padding:.2rem .6rem;border-radius:999px;
-}
-.badge-leader{background:rgba(255,90,42,.1);color:var(--accent)}
-.badge-member{background:var(--soft-blue);color:var(--primary)}
+.team-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem}
+.team-scroll-wrap{overflow-x:auto;padding-bottom:1.25rem;cursor:grab;user-select:none}
+.team-scroll-wrap:active{cursor:grabbing}
+.team-scroll-wrap::-webkit-scrollbar{height:4px}
+.team-scroll-wrap::-webkit-scrollbar-track{background:var(--border);border-radius:2px}
+.team-scroll-wrap::-webkit-scrollbar-thumb{background:var(--primary);border-radius:2px}
+.team-scroll{display:flex;gap:1rem;width:max-content;padding:4px 2px}
+.tc{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:1.5rem;width:158px;flex-shrink:0;text-align:center;
+  transition:transform .25s var(--ease-back),box-shadow .25s,border-color .25s;cursor:pointer}
+.tc:hover{transform:translateY(-6px) scale(1.03);box-shadow:var(--shadow-md);border-color:rgba(37,99,235,.25)}
+.tc-av{width:64px;height:64px;border-radius:50%;margin:0 auto 1rem;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:1.15rem;color:#fff;position:relative;
+  transition:transform .25s var(--ease-back)}
+.tc:hover .tc-av{transform:scale(1.1)}
+.tc-av::after{content:'';position:absolute;inset:-3px;border-radius:50%;
+  border:2px solid transparent;transition:border-color .25s}
+.tc:hover .tc-av::after{border-color:rgba(37,99,235,.3)}
+.av-lead{background:linear-gradient(135deg,var(--accent) 0%,#f97316 100%);box-shadow:0 4px 16px rgba(255,90,42,.25)}
+.av-memb{background:linear-gradient(135deg,var(--primary) 0%,#6366f1 100%)}
+.tc-name{font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.3rem;line-height:1.3}
+.tc-role{font-size:.7rem;color:var(--slate);font-weight:500;margin-bottom:.75rem}
+.tc-badge{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.06em;
+  padding:.2rem .65rem;border-radius:999px}
+.b-lead{background:rgba(255,90,42,.1);color:var(--accent)}
+.b-memb{background:var(--soft-blue);color:var(--primary)}
+.ts-dots{display:flex;gap:.4rem;justify-content:center;margin-top:1.25rem}
+.ts-dot{width:24px;height:4px;border-radius:2px;background:var(--border);
+  cursor:pointer;transition:background .3s,width .3s}
+.ts-dot.active{background:var(--primary);width:32px}
 
-/* ── QUIZ PREVIEW ── */
+/* ═══ QUIZ ═══ */
 #quiz-preview{padding:96px 0;background:var(--white);border-top:1px solid var(--border)}
-.quiz-prev-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem}
+.quiz-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem}
 .quiz-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
-.quiz-prev-card{
-  background:var(--pale-sky);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:1.5rem;
-  display:flex;flex-direction:column;align-items:flex-start;
-  transition:border-color .2s,background .2s;position:relative;
-}
-.quiz-prev-card:hover{border-color:rgba(37,99,235,.3);background:var(--soft-blue)}
-.quiz-prev-icon{
-  width:44px;height:44px;border-radius:var(--radius-md);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;margin-bottom:1rem;
-  background:var(--white);border:1px solid var(--border);
-  box-shadow:var(--shadow-sm);
-}
-.quiz-prev-name{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:.25rem}
-.quiz-prev-status{font-size:.75rem;color:var(--slate)}
-.quiz-lock{
-  position:absolute;top:.75rem;right:.75rem;
-  font-size:.75rem;color:var(--slate);
-}
-.quiz-cta-wrap{display:flex;justify-content:center;margin-top:2.5rem}
+.qc{background:var(--pale-sky);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:1.5rem;display:flex;flex-direction:column;align-items:flex-start;
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:border-color .25s,background .25s,transform .25s var(--ease-back),box-shadow .25s}
+.qc::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--soft-blue) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s}
+.qc:hover{border-color:rgba(37,99,235,.3);background:var(--soft-blue);
+  transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow-md)}
+.qc:hover::before{opacity:1}
+.qc:hover .q-lock{animation:lockShake .4s var(--ease-back)}
+.qc:hover .q-icon{transform:scale(1.1) rotate(5deg)}
+@keyframes lockShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+.q-icon{width:46px;height:46px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  margin-bottom:1rem;background:var(--white);border:1px solid var(--border);
+  box-shadow:var(--shadow-xs);transition:transform .3s var(--ease-back);z-index:1;overflow:hidden}
+.q-icon svg{width:24px;height:24px}
+.q-icon-em{font-size:1.35rem}
+.q-name{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:.25rem;z-index:1}
+.q-status{font-size:.73rem;color:var(--slate);z-index:1}
+.q-prog{margin-top:.75rem;width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden;z-index:1}
+.q-prog-fill{height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--primary-bright))}
+.q-lock{position:absolute;top:.75rem;right:.75rem;font-size:.7rem;color:var(--slate);z-index:1}
 
-/* ── CONTACT ── */
-#contact{padding:96px 0;background:linear-gradient(135deg,var(--primary) 0%,#4f46e5 100%);color:#fff}
-.contact-inner{max-width:700px;margin:0 auto;text-align:center}
-.contact-inner .tag{background:rgba(255,255,255,.15);color:#fff}
-.contact-inner h2{font-size:clamp(1.75rem,3vw,2.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:1rem;color:#fff}
-.contact-inner p{color:rgba(255,255,255,.8);font-size:1rem;margin-bottom:2rem}
-.contact-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
-.btn-white{
-  background:#fff;color:var(--primary);
-  padding:.875rem 1.75rem;border-radius:var(--radius-sm);
-  font-weight:700;font-size:.95rem;text-decoration:none;
-  transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:.4rem;
-}
-.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.btn-outline-white{
-  background:transparent;color:#fff;
-  border:1.5px solid rgba(255,255,255,.4);
-  padding:.875rem 1.75rem;border-radius:var(--radius-sm);
-  font-weight:600;font-size:.95rem;text-decoration:none;
-  transition:border-color .2s,background .2s;display:inline-flex;align-items:center;gap:.4rem;
-}
-.btn-outline-white:hover{border-color:#fff;background:rgba(255,255,255,.1)}
-.contact-info{display:flex;justify-content:center;align-items:center;gap:2rem;flex-wrap:wrap}
-.contact-info-item{display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:rgba(255,255,255,.8)}
-.social-row{display:flex;gap:.75rem;justify-content:center;margin-top:1.5rem}
-.social-btn{
-  width:40px;height:40px;border-radius:var(--radius-sm);
+/* ═══ CONTACT ═══ */
+#contact{padding:96px 0;background:linear-gradient(135deg,var(--primary) 0%,#4f46e5 100%);
+  color:#fff;position:relative;overflow:hidden}
+#contact::before{content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:24px 24px;animation:dotDrift 28s linear infinite}
+.ct-blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.ct-b1{width:400px;height:400px;top:-100px;right:-100px;
+  background:rgba(99,102,241,.3);animation:blob1 12s ease-in-out infinite alternate}
+.ct-b2{width:300px;height:300px;bottom:-80px;left:-80px;
+  background:rgba(255,255,255,.08);animation:blob2 16s ease-in-out infinite alternate}
+.ct-inner{max-width:680px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.ct-inner .tag{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.2)}
+.ct-inner h2{font-size:clamp(1.9rem,3.5vw,2.7rem);font-weight:800;letter-spacing:-.03em;margin-bottom:1rem;color:#fff}
+.ct-inner p{color:rgba(255,255,255,.8);font-size:1.05rem;margin-bottom:2rem;line-height:1.7}
+.ct-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+.btn-w{background:#fff;color:var(--primary);padding:.875rem 1.75rem;border-radius:var(--r-sm);
+  font-weight:700;font-size:.95rem;display:inline-flex;align-items:center;gap:.4rem;
+  transition:transform .2s,box-shadow .2s,background .2s}
+.btn-w:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.18);background:#f0f6ff}
+.btn-ow{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4);
+  padding:.875rem 1.75rem;border-radius:var(--r-sm);font-weight:600;font-size:.95rem;
+  display:inline-flex;align-items:center;gap:.4rem;
+  transition:border-color .2s,background .2s,transform .2s}
+.btn-ow:hover{border-color:#fff;background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.ct-info{display:flex;justify-content:center;align-items:center;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.ct-info-i{display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:rgba(255,255,255,.8)}
+.soc-row{display:flex;gap:.75rem;justify-content:center}
+.soc-btn{width:42px;height:42px;border-radius:var(--r-sm);
   background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;text-decoration:none;color:#fff;
-  transition:background .2s,transform .2s;
-}
-.social-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  transition:background .2s,transform .2s,box-shadow .2s;overflow:hidden}
+.soc-btn svg{width:18px;height:18px;fill:#fff}
+.soc-btn:hover{background:rgba(255,255,255,.28);transform:translateY(-3px) rotate(-3deg);box-shadow:0 8px 20px rgba(0,0,0,.2)}
 
-/* ── FOOTER ── */
-footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
-.footer-brand .fl-logo{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:.75rem}
-.footer-brand .fl-logo span{color:var(--primary-bright)}
-.footer-brand p{font-size:.85rem;line-height:1.7;color:rgba(255,255,255,.5);max-width:260px}
-.footer-col h4{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:1.25rem}
-.footer-col a{display:block;font-size:.875rem;color:rgba(255,255,255,.6);text-decoration:none;margin-bottom:.65rem;transition:color .2s}
-.footer-col a:hover{color:#fff}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;display:flex;align-items:center;justify-content:space-between}
-.footer-copy{font-size:.8rem;color:rgba(255,255,255,.35)}
-.footer-social{display:flex;gap:.5rem}
-.footer-social a{
-  width:32px;height:32px;border-radius:6px;
-  background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;
-  font-size:.85rem;color:rgba(255,255,255,.5);text-decoration:none;
-  transition:background .2s,color .2s;
-}
-.footer-social a:hover{background:var(--primary);color:#fff}
+/* ═══ FOOTER ═══ */
+footer{background:var(--navy);color:rgba(255,255,255,.7);padding:64px 0 32px}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.ft-brand .ft-logo{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:.75rem}
+.ft-brand .ft-logo span{color:var(--primary-bright)}
+.ft-brand p{font-size:.83rem;line-height:1.75;color:rgba(255,255,255,.42);max-width:260px}
+.ft-col h4{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);margin-bottom:1.25rem}
+.ft-col a{display:flex;align-items:center;font-size:.85rem;color:rgba(255,255,255,.52);
+  margin-bottom:.65rem;transition:color .2s,padding-left .2s}
+.ft-col a:hover{color:#fff;padding-left:.5rem}
+.ft-bot{border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;
+  display:flex;align-items:center;justify-content:space-between}
+.ft-copy{font-size:.78rem;color:rgba(255,255,255,.28)}
+.ft-soc{display:flex;gap:.5rem}
+.ft-soc a{width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.42);
+  transition:background .2s,color .2s,transform .2s;overflow:hidden}
+.ft-soc a svg{width:15px;height:15px;fill:currentColor}
+.ft-soc a:hover{background:var(--primary);color:#fff;transform:translateY(-2px)}
 
-/* ── LOGIN MODAL ── */
-.modal-overlay{
-  position:fixed;inset:0;z-index:1000;
-  background:rgba(15,23,42,.6);backdrop-filter:blur(12px);
-  display:none;align-items:center;justify-content:center;padding:1rem;
-}
-.modal-overlay.active{display:flex}
-.modal-box{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius-xl);padding:2.5rem;
-  width:100%;max-width:400px;position:relative;
-  box-shadow:var(--shadow-lg);animation:modalIn .3s ease;
-}
-@keyframes modalIn{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-close{position:absolute;top:1.25rem;right:1.25rem;background:var(--pale-sky);border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--slate);font-size:1rem;transition:background .2s}
-.modal-close:hover{background:var(--soft-blue)}
+/* ═══ MODAL ═══ */
+.modal-ov{position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.65);
+  backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-ov.active{display:flex}
+.modal-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:2.5rem;width:100%;max-width:400px;position:relative;box-shadow:var(--shadow-xl);
+  animation:modalIn .35s var(--ease-back)}
+@keyframes modalIn{from{transform:translateY(24px) scale(.94);opacity:0}to{transform:none;opacity:1}}
+.modal-x{position:absolute;top:1.25rem;right:1.25rem;background:var(--pale-sky);border:none;cursor:pointer;
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:var(--slate);font-size:.9rem;transition:background .2s,transform .2s}
+.modal-x:hover{background:var(--soft-blue);transform:rotate(90deg)}
 .modal-logo{text-align:center;margin-bottom:1.75rem}
-.modal-logo .ml-name{font-size:1.25rem;font-weight:800;color:var(--navy)}
-.modal-logo .ml-name span{color:var(--primary)}
-.modal-logo .ml-sub{font-size:.8rem;color:var(--slate);margin-top:.25rem}
-.form-field{margin-bottom:1.25rem}
-.form-field label{display:block;font-size:.78rem;font-weight:700;color:var(--slate);margin-bottom:.5rem;letter-spacing:.04em;text-transform:uppercase}
-.form-field input{
-  width:100%;padding:.875rem 1rem;
-  background:var(--pale-sky);border:1.5px solid var(--border);
-  border-radius:var(--radius-sm);color:var(--navy);
+.ml-name{font-size:1.25rem;font-weight:800;color:var(--navy)}
+.ml-name span{color:var(--primary)}
+.ml-sub{font-size:.8rem;color:var(--slate);margin-top:.3rem}
+.f-field{margin-bottom:1.25rem}
+.f-field label{display:block;font-size:.76rem;font-weight:700;color:var(--slate);
+  margin-bottom:.5rem;letter-spacing:.06em;text-transform:uppercase}
+.f-field input{width:100%;padding:.875rem 1rem;background:var(--pale-sky);
+  border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--navy);
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;
-  transition:border-color .2s,background .2s;outline:none;
-}
-.form-field input:focus{border-color:var(--primary);background:var(--white)}
-.modal-submit{
-  width:100%;padding:.875rem;background:var(--primary);
-  color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;
-  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.95rem;
-  transition:background .2s;
-}
-.modal-submit:hover{background:var(--primary-bright)}
-.modal-error{color:var(--error);font-size:.8rem;text-align:center;margin-top:.75rem;display:none}
+  transition:border-color .2s,background .2s,box-shadow .2s;outline:none}
+.f-field input:focus{border-color:var(--primary);background:var(--white);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.modal-btn{width:100%;padding:.9rem;background:var(--primary);color:#fff;border:none;
+  border-radius:var(--r-sm);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700;font-size:.95rem;transition:background .2s,transform .2s,box-shadow .2s}
+.modal-btn:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:var(--shadow-blue)}
+.modal-err{color:var(--error);font-size:.8rem;text-align:center;margin-top:.75rem;display:none}
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes countUp{from{opacity:0}to{opacity:1}}
-
-/* ── RESPONSIVE ── */
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1100px){.svc-row2{max-width:80%}}
 @media(max-width:1024px){
-  .hero-inner{grid-template-columns:1fr;gap:2rem}
-  .hero-visual{display:none}
-  .services-grid{grid-template-columns:repeat(3,1fr)}
-  .numbers-grid{grid-template-columns:repeat(2,1fr)}
-  .quiz-grid{grid-template-columns:repeat(4,1fr)}
-  .footer-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}.nav-toggle{display:flex}
+  .hero-inner{grid-template-columns:1fr;gap:2.5rem}
+  .hero-visual{max-width:520px;margin:0 auto}
+  .fc-t{top:-12px;right:8px}.fc-b{bottom:-12px;left:8px}
+  .num-grid{grid-template-columns:repeat(2,1fr)}
+  .ft-grid{grid-template-columns:1fr 1fr;gap:2rem}
 }
 @media(max-width:768px){
-  .nav-links{display:none}
-  .nav-mobile-toggle{display:block}
-  .services-grid{grid-template-columns:repeat(2,1fr)}
-  .results-grid{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .svc-row1{grid-template-columns:repeat(2,1fr)}
+  .svc-row2{grid-template-columns:repeat(2,1fr);max-width:100%}
+  .res-grid{grid-template-columns:1fr}
   .quiz-grid{grid-template-columns:repeat(2,1fr)}
-  .footer-grid{grid-template-columns:1fr}
-  .footer-bottom{flex-direction:column;gap:1rem;text-align:center}
-  .results-header,.team-header,.quiz-prev-header{flex-direction:column;align-items:flex-start;gap:.75rem}
+  .res-hdr,.team-hdr,.quiz-hdr{flex-direction:column;align-items:flex-start;gap:.75rem}
   section{padding:64px 0}
+  .ft-grid{grid-template-columns:1fr}
+  .ft-bot{flex-direction:column;gap:1rem;text-align:center}
 }
-@media(max-width:390px){
-  .numbers-grid{grid-template-columns:1fr}
-  .services-grid{grid-template-columns:1fr}
+@media(max-width:480px){
+  .num-grid{grid-template-columns:1fr}
+  .svc-row1,.svc-row2{grid-template-columns:1fr;max-width:100%}
+  .hero-actions{flex-direction:column;align-items:flex-start}
+  .ct-actions{flex-direction:column;align-items:center}
   .quiz-grid{grid-template-columns:repeat(2,1fr)}
-  .hero-actions{flex-direction:column}
-  .contact-actions{flex-direction:column;align-items:center}
 }
 </style>
 </head>
 <body>
 
+<!-- SCROLL PROGRESS -->
+<div id="sp"></div>
+
 <!-- NAV -->
 <nav id="mainNav">
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      <span class="nav-logo-upbase">U</span>
-      <span class="nav-logo-divider"></span>
+    <a href="#hero" class="nav-logo">
+      <span class="nav-logo-u">U</span>
+      <span class="nav-logo-div"></span>
       <span class="nav-logo-name">Media<span>Omni</span></span>
     </a>
     <div class="nav-links" id="navLinks">
@@ -496,27 +526,48 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
       <a href="#team">Đội ngũ</a>
       <a href="#quiz-preview">Quiz Hub</a>
       <a href="dashboard.html">Team Hub</a>
-      <a href="#" class="nav-cta" onclick="openLogin();return false">🔒 Đăng nhập Team Hub</a>
+      <a href="#" class="nav-cta" onclick="openLogin();return false">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Đăng nhập
+      </a>
     </div>
-    <button class="nav-mobile-toggle" onclick="toggleMobileNav()">
+    <button class="nav-toggle" id="navToggle" onclick="toggleMob()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
+  <div class="nav-mob" id="navMob">
+    <a href="#hero"         onclick="closeMob()">Trang chủ</a>
+    <a href="#services"     onclick="closeMob()">Năng lực</a>
+    <a href="#results"      onclick="closeMob()">Kết quả</a>
+    <a href="#team"         onclick="closeMob()">Đội ngũ</a>
+    <a href="#quiz-preview" onclick="closeMob()">Quiz Hub</a>
+    <a href="dashboard.html">Team Hub</a>
+    <a href="#" onclick="closeMob();openLogin();return false">🔒 Đăng nhập Team Hub</a>
+  </div>
 </nav>
+<div class="mob-overlay" id="mobOverlay" onclick="closeMob()"></div>
 
 <!-- HERO -->
 <section id="hero">
+  <div class="h-blob h-blob-1"></div>
+  <div class="h-blob h-blob-2"></div>
   <div class="hero-inner">
-    <div class="hero-left">
-      <div class="hero-badge">Performance Marketing Team</div>
+    <div>
+      <div class="hero-badge">
+        <span class="badge-pulse"></span>Performance Marketing Team
+      </div>
       <h1 class="hero-title">
-        One Team.<br>One Vision.<br>
-        <span class="highlight">Breakthrough Growth.</span>
+        <span class="hero-line"><span class="hero-line-in li-d1">One Team.</span></span>
+        <span class="hero-line"><span class="hero-line-in li-d2">One Vision.</span></span>
+        <span class="hero-line"><span class="hero-line-in li-d3 highlight">Breakthrough Growth.</span></span>
       </h1>
       <p class="hero-sub">Media Omni là team Performance Marketing thuộc UpBase. Chúng tôi vận hành tăng trưởng đa kênh trên TikTok, Shopee, Meta và Google, tạo ra kết quả thực tế cho thương hiệu.</p>
       <div class="hero-actions">
-        <a href="#services" class="btn-primary">Khám phá năng lực →</a>
-        <a href="#" class="btn-ghost" onclick="openLogin();return false">🔒 Đăng nhập Team Hub</a>
+        <a href="#services" class="btn-p">Khám phá năng lực →</a>
+        <a href="#" class="btn-g" onclick="openLogin();return false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Team Hub
+        </a>
       </div>
       <div class="hero-badges">
         <span class="hero-pill"><span class="dot"></span>Data-driven</span>
@@ -525,61 +576,60 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
         <span class="hero-pill"><span class="dot"></span>Omni-channel</span>
       </div>
     </div>
+
+    <!-- Dashboard -->
     <div class="hero-visual">
-      <div class="float-card float-card-top">
+      <div class="fc fc-t">
         <span class="fc-dot" style="background:var(--success)"></span>
-        <span class="fc-label">NMV Total</span>
+        <span class="fc-lbl">NMV Total</span>
         <span class="fc-val">356B ↑</span>
       </div>
-      <div class="dashboard-mockup">
-        <div class="dash-header">
-          <span class="dash-title-text">📊 Media Omni Dashboard</span>
-          <span class="dash-badge-pill">Overview 2025</span>
+      <div class="dash-wrap">
+        <div class="dash-hdr">
+          <span class="dash-hdr-t">📊 Media Omni Dashboard</span>
+          <span class="dash-pill">Overview 2025</span>
         </div>
         <div class="dash-metrics">
-          <div class="dash-metric">
-            <div class="dash-metric-label">GMV Ads</div>
-            <div class="dash-metric-val">323B</div>
-            <div class="dash-metric-sub">↑ vs 2024</div>
-          </div>
-          <div class="dash-metric">
-            <div class="dash-metric-label">NMV Total</div>
-            <div class="dash-metric-val">356B</div>
-            <div class="dash-metric-sub">↑ vs 2024</div>
-          </div>
-          <div class="dash-metric">
-            <div class="dash-metric-label">Budget</div>
-            <div class="dash-metric-val">62B</div>
-            <div class="dash-metric-sub">↑ vs 2024</div>
-          </div>
+          <div class="dash-m"><div class="dm-lbl">GMV Ads</div><div class="dm-val">323B</div><div class="dm-sub">↑ vs 2024</div></div>
+          <div class="dash-m"><div class="dm-lbl">NMV Total</div><div class="dm-val">356B</div><div class="dm-sub">↑ vs 2024</div></div>
+          <div class="dash-m"><div class="dm-lbl">Budget</div><div class="dm-val">62B</div><div class="dm-sub">↑ vs 2024</div></div>
         </div>
         <div class="dash-chart">
-          <div class="chart-line">
-            <svg viewBox="0 0 300 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="0,45 40,38 80,30 120,22 160,18 200,12 240,8 280,4 300,3"
-                stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <polyline points="0,45 40,38 80,30 120,22 160,18 200,12 240,8 280,4 300,3 300,50 0,50"
-                fill="url(#chartGrad)" opacity=".2"/>
-              <defs>
-                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#2563EB"/>
-                  <stop offset="100%" stop-color="#2563EB" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-            </svg>
+          <svg class="c-svg" viewBox="0 0 320 54" fill="none" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="cGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#2563EB" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path class="c-fill" d="M0,50 L0,46 C40,46 40,40 80,32 C120,24 120,18 160,14 C200,10 200,8 240,5 C280,2 280,2 320,1 L320,50 Z"/>
+            <path class="c-line" d="M0,46 C40,46 40,40 80,32 C120,24 120,18 160,14 C200,10 200,8 240,5 C280,2 280,2 320,1"/>
+          </svg>
+        </div>
+        <div class="dash-plats">
+          <!-- TikTok -->
+          <div class="plat-ic" title="TikTok">
+            <svg viewBox="0 0 24 24" fill="#010101"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.83 1.54V6.77a4.85 4.85 0 0 1-1.07-.08z"/></svg>
+          </div>
+          <!-- Shopee -->
+          <div class="plat-ic" title="Shopee">
+            <svg viewBox="0 0 24 24" fill="#EE4D2D"><path d="M12 2C9.5 2 7.5 3.9 7.5 6.3H6L4.5 20h15L18 6.3h-1.5C16.5 3.9 14.5 2 12 2zm0 1.8c1.8 0 3.2 1.3 3.4 3H8.6C8.8 5.1 10.2 3.8 12 3.8zm0 6.5c-2.3 0-4.2-1.5-4.8-3.5h1.5c.5 1.2 1.7 2 3.3 2s2.8-.8 3.3-2h1.5c-.6 2-2.5 3.5-4.8 3.5z"/></svg>
+          </div>
+          <!-- Meta -->
+          <div class="plat-ic" title="Meta Ads">
+            <svg viewBox="0 0 24 24" fill="#0866FF"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          <!-- Google -->
+          <div class="plat-ic" title="Google Ads">
+            <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+          <div class="plat-ic" style="flex-direction:column;background:var(--pale-sky)">
+            <span style="font-size:.55rem;font-weight:800;color:var(--primary);line-height:1.1;text-align:center">+40<br>shops</span>
           </div>
         </div>
-        <div class="dash-platforms">
-          <div class="plat-icon">🎵</div>
-          <div class="plat-icon">🛍️</div>
-          <div class="plat-icon">📘</div>
-          <div class="plat-icon">🔍</div>
-          <div class="plat-icon" style="background:var(--pale-sky);font-size:.65rem;font-weight:700;color:var(--primary)">+40<br>shops</div>
-        </div>
       </div>
-      <div class="float-card float-card-bot">
+      <div class="fc fc-b">
         <span class="fc-dot" style="background:var(--primary)"></span>
-        <span class="fc-label">ROAS TB</span>
+        <span class="fc-lbl">ROAS TB</span>
         <span class="fc-val">&gt;7x</span>
       </div>
     </div>
@@ -589,30 +639,30 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
 <!-- NUMBERS -->
 <section id="numbers">
   <div class="container">
-    <div class="numbers-grid fade-up">
-      <div class="number-cell">
-        <span class="number-icon">📦</span>
-        <span class="number-val" data-target="323">0</span>B
-        <div class="number-label">GMV Ads 2025</div>
-        <div class="number-context">Tổng GMV có đóng góp từ Ads</div>
+    <div class="num-grid rv">
+      <div class="num-cell">
+        <span class="num-icon">📦</span>
+        <span class="num-val" data-target="323" data-suffix="B">0B</span>
+        <div class="num-lbl">GMV Ads 2025</div>
+        <div class="num-ctx">Tổng GMV có đóng góp từ Ads</div>
       </div>
-      <div class="number-cell">
-        <span class="number-icon">📈</span>
-        <span class="number-val" data-target="356">0</span>B
-        <div class="number-label">NMV Total 2025</div>
-        <div class="number-context">57% NMV toàn UpBase</div>
+      <div class="num-cell">
+        <span class="num-icon">📈</span>
+        <span class="num-val" data-target="356" data-suffix="B">0B</span>
+        <div class="num-lbl">NMV Total 2025</div>
+        <div class="num-ctx">57% NMV toàn UpBase</div>
       </div>
-      <div class="number-cell">
-        <span class="number-icon">💰</span>
-        <span class="number-val" data-target="62">0</span>B
-        <div class="number-label">Budget Managed</div>
-        <div class="number-context">Across TikTok, Shopee, Meta, GG</div>
+      <div class="num-cell">
+        <span class="num-icon">💰</span>
+        <span class="num-val" data-target="62" data-suffix="B">0B</span>
+        <div class="num-lbl">Budget Managed</div>
+        <div class="num-ctx">Across TikTok, Shopee, Meta, GG</div>
       </div>
-      <div class="number-cell">
-        <span class="number-icon">🎯</span>
-        <span class="number-val">&gt;7x</span>
-        <div class="number-label">ROAS Trung bình</div>
-        <div class="number-context">TikTok ~6 | Shopee ~9</div>
+      <div class="num-cell">
+        <span class="num-icon">🎯</span>
+        <span class="num-val">&gt;7x</span>
+        <div class="num-lbl">ROAS Trung bình</div>
+        <div class="num-ctx">TikTok ~6 | Shopee ~9</div>
       </div>
     </div>
   </div>
@@ -621,60 +671,62 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
 <!-- SERVICES -->
 <section id="services">
   <div class="container">
-    <div class="section-header fade-up">
+    <div class="sec-hdr rv">
       <span class="tag">Năng lực của chúng tôi</span>
-      <h2 class="section-title">Vận hành đa nền tảng — Hiệu suất tối ưu</h2>
-      <p class="section-sub">Phủ sóng toàn bộ hành trình mua hàng, từ awareness đến conversion.</p>
+      <h2 class="sec-title">Vận hành đa nền tảng — Hiệu suất tối ưu</h2>
+      <p class="sec-sub">Phủ sóng toàn bộ hành trình mua hàng, từ awareness đến conversion.</p>
     </div>
-    <div class="services-grid fade-up">
-      <div class="service-card">
-        <div class="service-logo">🎵</div>
+    <div class="svc-row1">
+      <div class="svc-card c-tiktok rv d1">
+        <div class="svc-logo">
+          <svg viewBox="0 0 24 24" fill="#010101"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.83 1.54V6.77a4.85 4.85 0 0 1-1.07-.08z"/></svg>
+        </div>
         <h3>TikTok Ads & Shop</h3>
-        <p>Tối ưu toàn diện từ content, ads, đến shop đề bùng nổ GMV.</p>
-        <div class="service-tags">
-          <span class="service-tag-chip">GMV Growth</span>
-          <span class="service-tag-chip">Shop Ads</span>
-          <span class="service-tag-chip">Content</span>
+        <p>Tối ưu toàn diện từ content, ads, đến shop để bùng nổ GMV trên nền tảng số 1.</p>
+        <div class="svc-tags">
+          <span class="svc-chip">GMV Growth</span><span class="svc-chip">Shop Ads</span><span class="svc-chip">Content</span>
         </div>
       </div>
-      <div class="service-card">
-        <div class="service-logo">🛍️</div>
+      <div class="svc-card c-shopee rv d2">
+        <div class="svc-logo">
+          <svg viewBox="0 0 24 24" fill="#EE4D2D"><path d="M12 2C9.5 2 7.5 3.9 7.5 6.3H6L4.5 20h15L18 6.3h-1.5C16.5 3.9 14.5 2 12 2zm0 1.8c1.8 0 3.2 1.3 3.4 3H8.6C8.8 5.1 10.2 3.8 12 3.8zm0 6.5c-2.3 0-4.2-1.5-4.8-3.5h1.5c.5 1.2 1.7 2 3.3 2s2.8-.8 3.3-2h1.5c-.6 2-2.5 3.5-4.8 3.5z"/></svg>
+        </div>
         <h3>Shopee Ads</h3>
-        <p>Tối ưu search, discovery, shopee ads, livestream để tăng doanh số.</p>
-        <div class="service-tags">
-          <span class="service-tag-chip">Search Ads</span>
-          <span class="service-tag-chip">Discovery</span>
-          <span class="service-tag-chip">Live</span>
+        <p>Tối ưu search, discovery, shopee ads, livestream để tăng doanh số bền vững.</p>
+        <div class="svc-tags">
+          <span class="svc-chip">Search Ads</span><span class="svc-chip">Discovery</span><span class="svc-chip">Live</span>
         </div>
       </div>
-      <div class="service-card">
-        <div class="service-logo">📘</div>
+      <div class="svc-card c-meta rv d3">
+        <div class="svc-logo">
+          <svg viewBox="0 0 24 24" fill="#0866FF"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
         <h3>Meta Ads & CPAS</h3>
-        <p>Triển khai chiến dịch hiệu quả trên Facebook, Instagram và tối ưu CPAS.</p>
-        <div class="service-tags">
-          <span class="service-tag-chip">CPAS</span>
-          <span class="service-tag-chip">Retargeting</span>
-          <span class="service-tag-chip">Scaling</span>
+        <p>Triển khai chiến dịch hiệu quả trên Facebook, Instagram và tối ưu CPAS chuyển đổi cao.</p>
+        <div class="svc-tags">
+          <span class="svc-chip">CPAS</span><span class="svc-chip">Retargeting</span><span class="svc-chip">Scaling</span>
         </div>
       </div>
-      <div class="service-card">
-        <div class="service-logo">🔍</div>
+    </div>
+    <div class="svc-row2">
+      <div class="svc-card c-google rv d4">
+        <div class="svc-logo">
+          <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        </div>
         <h3>Google Ads</h3>
-        <p>Tối ưu Search, Shopping, YouTube và Performance Max toàn diện.</p>
-        <div class="service-tags">
-          <span class="service-tag-chip">Search</span>
-          <span class="service-tag-chip">Shopping</span>
-          <span class="service-tag-chip">PMAX</span>
+        <p>Tối ưu Search, Shopping, YouTube và Performance Max toàn diện, đúng đối tượng.</p>
+        <div class="svc-tags">
+          <span class="svc-chip">Search</span><span class="svc-chip">Shopping</span><span class="svc-chip">PMAX</span>
         </div>
       </div>
-      <div class="service-card">
-        <div class="service-logo">⚡</div>
+      <div class="svc-card c-omni rv d5">
+        <div class="svc-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><path d="M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg>
+        </div>
         <h3>Omni-channel Strategy</h3>
-        <p>Chiến lược đa kênh kết nối dữ liệu, đồng bộ và tối ưu toàn bộ hành trình.</p>
-        <div class="service-tags">
-          <span class="service-tag-chip">Strategy</span>
-          <span class="service-tag-chip">Data</span>
-          <span class="service-tag-chip">Automation</span>
+        <p>Chiến lược đa kênh kết nối dữ liệu, đồng bộ và tối ưu toàn bộ hành trình khách hàng.</p>
+        <div class="svc-tags">
+          <span class="svc-chip">Strategy</span><span class="svc-chip">Data</span><span class="svc-chip">Automation</span>
         </div>
       </div>
     </div>
@@ -684,128 +736,61 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
 <!-- RESULTS -->
 <section id="results">
   <div class="container">
-    <div class="results-header fade-up">
+    <div class="res-hdr rv">
       <div>
         <span class="tag">Kết quả thực tế</span>
-        <h2 class="section-title">Hiệu quả được chứng minh bằng số liệu</h2>
+        <h2 class="sec-title">Hiệu quả được chứng minh bằng số liệu</h2>
       </div>
-      <a href="#contact" class="results-link">Xem tất cả case study →</a>
+      <a href="#contact" class="res-link">Xem tất cả case study →</a>
     </div>
-    <div class="results-grid fade-up">
-      <div class="case-card">
-        <div class="case-card-header">
-          <span class="case-category cat-beauty">Beauty</span>
-          <span class="case-brand">L'Occitane</span>
-        </div>
-        <div class="case-body">
-          <div class="case-service">🎯 Ads Reach + Ads Engagement + Ads Lead<br>Khai trương cửa hàng mới — Thu hút khách & thu thập data</div>
-          <div class="case-metrics">
-            <div class="case-metric">
-              <span class="case-metric-val">3M+</span>
-              <span class="case-metric-label">Reach</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val green">20K+</span>
-              <span class="case-metric-label">Engagement</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val orange">1.5K+</span>
-              <span class="case-metric-label">Leads</span>
-            </div>
+    <div class="res-grid">
+      <div class="case-card rv-l d1">
+        <div class="cc-hdr"><span class="cc-cat cat-beauty">Beauty</span><span class="cc-brand">L'Occitane</span></div>
+        <div class="cc-body">
+          <div class="cc-svc">🎯 Ads Reach + Engagement + Lead<br>Khai trương cửa hàng mới — Thu hút khách & thu thập data</div>
+          <div class="cm-grid">
+            <div class="cm-cell"><span class="cm-val">3M+</span><span class="cm-lbl">Reach</span></div>
+            <div class="cm-cell"><span class="cm-val green">20K+</span><span class="cm-lbl">Engagement</span></div>
+            <div class="cm-cell"><span class="cm-val orange">1.5K+</span><span class="cm-lbl">Leads</span></div>
           </div>
         </div>
-        <div class="case-footer">
-          <span class="case-chip">Meta Ads</span>
-          <span class="case-chip">Lead Gen</span>
-          <span class="case-chip">Brand Awareness</span>
-        </div>
+        <div class="cc-ftr"><span class="case-chip">Meta Ads</span><span class="case-chip">Lead Gen</span><span class="case-chip">Brand Awareness</span></div>
       </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <span class="case-category cat-health">Health</span>
-          <span class="case-brand">Vitabiotics</span>
-        </div>
-        <div class="case-body">
-          <div class="case-service">📊 Ads Impression / View / Follow / Reach / Traffic / Engagement<br>Tăng traffic và doanh thu gian hàng Shopee</div>
-          <div class="case-metrics">
-            <div class="case-metric">
-              <span class="case-metric-val green">TOP 4</span>
-              <span class="case-metric-label">Shopee ngành TPCH</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val">35%</span>
-              <span class="case-metric-label">Traffic từ Ads</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val orange">3.09B</span>
-              <span class="case-metric-label">Target GMV</span>
-            </div>
+      <div class="case-card rv-r d2">
+        <div class="cc-hdr"><span class="cc-cat cat-health">Health</span><span class="cc-brand">Vitabiotics</span></div>
+        <div class="cc-body">
+          <div class="cc-svc">📊 Impression / View / Follow / Reach / Traffic<br>Tăng traffic và doanh thu gian hàng Shopee</div>
+          <div class="cm-grid">
+            <div class="cm-cell"><span class="cm-val green">TOP 4</span><span class="cm-lbl">Shopee TPCH</span></div>
+            <div class="cm-cell"><span class="cm-val">35%</span><span class="cm-lbl">Traffic từ Ads</span></div>
+            <div class="cm-cell"><span class="cm-val orange">3.09B</span><span class="cm-lbl">Target GMV</span></div>
           </div>
         </div>
-        <div class="case-footer">
-          <span class="case-chip">Shopee Ads</span>
-          <span class="case-chip">Traffic Growth</span>
-          <span class="case-chip">TPCH</span>
-        </div>
+        <div class="cc-ftr"><span class="case-chip">Shopee Ads</span><span class="case-chip">Traffic Growth</span><span class="case-chip">TPCH</span></div>
       </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <span class="case-category cat-skincare">Skincare</span>
-          <span class="case-brand">UpBeauty</span>
-        </div>
-        <div class="case-body">
-          <div class="case-service">📘 Meta Ads — Tối ưu vận hành bán hàng chuyển đổi<br>Bắt đầu 9/2025 — Personal Care & Skin Care</div>
-          <div class="case-metrics">
-            <div class="case-metric">
-              <span class="case-metric-val green">60+</span>
-              <span class="case-metric-label">Content/tháng</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val">100%</span>
-              <span class="case-metric-label">Tỷ lệ phản hồi</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val orange">10%</span>
-              <span class="case-metric-label">Chốt sau tin nhắn</span>
-            </div>
+      <div class="case-card rv-l d3">
+        <div class="cc-hdr"><span class="cc-cat cat-skin">Skincare</span><span class="cc-brand">UpBeauty</span></div>
+        <div class="cc-body">
+          <div class="cc-svc">📘 Meta Ads — Tối ưu vận hành bán hàng chuyển đổi<br>Bắt đầu 9/2025 — Personal Care & Skin Care</div>
+          <div class="cm-grid">
+            <div class="cm-cell"><span class="cm-val green">60+</span><span class="cm-lbl">Content/tháng</span></div>
+            <div class="cm-cell"><span class="cm-val">100%</span><span class="cm-lbl">Tỷ lệ phản hồi</span></div>
+            <div class="cm-cell"><span class="cm-val orange">10%</span><span class="cm-lbl">Chốt sau tin nhắn</span></div>
           </div>
         </div>
-        <div class="case-footer">
-          <span class="case-chip">Meta Ads</span>
-          <span class="case-chip">Conversion</span>
-          <span class="case-chip">Fanpage</span>
-        </div>
+        <div class="cc-ftr"><span class="case-chip">Meta Ads</span><span class="case-chip">Conversion</span><span class="case-chip">Fanpage</span></div>
       </div>
-
-      <div class="case-card">
-        <div class="case-card-header">
-          <span class="case-category cat-intimate">Intimate</span>
-          <span class="case-brand">Ziaja</span>
-        </div>
-        <div class="case-body">
-          <div class="case-service">🔗 CPAS — Quảng cáo cộng tác Meta × Shopee<br>Tăng traffic cho gian hàng Shopee — Tháng 1/2026</div>
-          <div class="case-metrics">
-            <div class="case-metric">
-              <span class="case-metric-val green">+11%</span>
-              <span class="case-metric-label">Lượt truy cập</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val">1.5x</span>
-              <span class="case-metric-label">ROAS ngành</span>
-            </div>
-            <div class="case-metric">
-              <span class="case-metric-val orange">CPAS</span>
-              <span class="case-metric-label">Meta × Shopee</span>
-            </div>
+      <div class="case-card rv-r d4">
+        <div class="cc-hdr"><span class="cc-cat cat-inti">Intimate</span><span class="cc-brand">Ziaja</span></div>
+        <div class="cc-body">
+          <div class="cc-svc">🔗 CPAS — Quảng cáo cộng tác Meta × Shopee<br>Tăng traffic cho gian hàng Shopee — T1/2026</div>
+          <div class="cm-grid">
+            <div class="cm-cell"><span class="cm-val green">+11%</span><span class="cm-lbl">Lượt truy cập</span></div>
+            <div class="cm-cell"><span class="cm-val">1.5x</span><span class="cm-lbl">ROAS ngành</span></div>
+            <div class="cm-cell"><span class="cm-val orange">CPAS</span><span class="cm-lbl">Meta × Shopee</span></div>
           </div>
         </div>
-        <div class="case-footer">
-          <span class="case-chip">CPAS</span>
-          <span class="case-chip">Shopee</span>
-          <span class="case-chip">Traffic</span>
-        </div>
+        <div class="cc-ftr"><span class="case-chip">CPAS</span><span class="case-chip">Shopee</span><span class="case-chip">Traffic</span></div>
       </div>
     </div>
   </div>
@@ -814,78 +799,74 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
 <!-- TEAM -->
 <section id="team">
   <div class="container">
-    <div class="team-header fade-up">
+    <div class="team-hdr rv">
       <div>
         <span class="tag">Đội ngũ Media Omni</span>
-        <h2 class="section-title">12 Growth Operators</h2>
-        <p class="section-sub">Mỗi người một thế mạnh — một hệ thống vận hành.</p>
+        <h2 class="sec-title">12 Growth Operators</h2>
+        <p class="sec-sub">Mỗi người một thế mạnh — một hệ thống vận hành.</p>
       </div>
     </div>
-    <div class="team-scroll-wrap fade-up">
-      <div class="team-scroll" id="teamScroll"></div>
+    <div class="team-scroll-wrap rv" id="tsWrap">
+      <div class="team-scroll" id="tsScroll"></div>
     </div>
+    <div class="ts-dots" id="tsDots"></div>
   </div>
 </section>
 
-<!-- QUIZ PREVIEW -->
+<!-- QUIZ -->
 <section id="quiz-preview">
   <div class="container">
-    <div class="quiz-prev-header fade-up">
+    <div class="quiz-hdr rv">
       <div>
         <span class="tag">Quiz Hub Preview</span>
-        <h2 class="section-title">Học hỏi — Thực hành — Nâng tầm mỗi ngày</h2>
-        <p class="section-sub">Hệ thống bài kiểm tra nội bộ — đăng nhập để làm bài và xem kết quả.</p>
+        <h2 class="sec-title">Học hỏi — Thực hành — Nâng tầm mỗi ngày</h2>
+        <p class="sec-sub">Hệ thống bài kiểm tra nội bộ — đăng nhập để làm bài và xem kết quả.</p>
       </div>
-      <a href="#" class="btn-primary" onclick="openLogin();return false">🔒 Đăng nhập để làm bài</a>
+      <a href="#" class="btn-p" onclick="openLogin();return false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Đăng nhập để làm bài
+      </a>
     </div>
-    <div class="quiz-grid fade-up">
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">🎵</div>
-        <div class="quiz-prev-name">TikTok Ads</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+    <div class="quiz-grid">
+      <div class="qc rv d1" onclick="openLogin()">
+        <div class="q-icon"><svg viewBox="0 0 24 24" fill="#010101" width="24" height="24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.83 1.54V6.77a4.85 4.85 0 0 1-1.07-.08z"/></svg></div>
+        <div class="q-name">TikTok Ads</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">🛍️</div>
-        <div class="quiz-prev-name">Shopee Ads</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+      <div class="qc rv d2" onclick="openLogin()">
+        <div class="q-icon"><svg viewBox="0 0 24 24" fill="#EE4D2D" width="24" height="24"><path d="M12 2C9.5 2 7.5 3.9 7.5 6.3H6L4.5 20h15L18 6.3h-1.5C16.5 3.9 14.5 2 12 2zm0 1.8c1.8 0 3.2 1.3 3.4 3H8.6C8.8 5.1 10.2 3.8 12 3.8zm0 6.5c-2.3 0-4.2-1.5-4.8-3.5h1.5c.5 1.2 1.7 2 3.3 2s2.8-.8 3.3-2h1.5c-.6 2-2.5 3.5-4.8 3.5z"/></svg></div>
+        <div class="q-name">Shopee Ads</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">📘</div>
-        <div class="quiz-prev-name">Meta Ads</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+      <div class="qc rv d3" onclick="openLogin()">
+        <div class="q-icon"><svg viewBox="0 0 24 24" fill="#0866FF" width="24" height="24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
+        <div class="q-name">Meta Ads</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">🔍</div>
-        <div class="quiz-prev-name">Google Ads</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+      <div class="qc rv d4" onclick="openLogin()">
+        <div class="q-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg></div>
+        <div class="q-name">Google Ads</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">👑</div>
-        <div class="quiz-prev-name">Leadership</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+      <div class="qc rv d5" onclick="openLogin()">
+        <div class="q-icon q-icon-em">👑</div>
+        <div class="q-name">Leadership</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">🤝</div>
-        <div class="quiz-prev-name">Soft Skills</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+      <div class="qc rv d6" onclick="openLogin()">
+        <div class="q-icon q-icon-em">🤝</div>
+        <div class="q-name">Soft Skills</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">📋</div>
-        <div class="quiz-prev-name">SOP & Process</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+      <div class="qc rv d7" onclick="openLogin()">
+        <div class="q-icon q-icon-em">📋</div>
+        <div class="q-name">SOP & Process</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
-      <div class="quiz-prev-card">
-        <div class="quiz-prev-icon">🚀</div>
-        <div class="quiz-prev-name">Onboarding</div>
-        <div class="quiz-prev-status">Sắp có câu hỏi</div>
-        <span class="quiz-lock">🔒</span>
+      <div class="qc rv d8" onclick="openLogin()">
+        <div class="q-icon q-icon-em">🚀</div>
+        <div class="q-name">Onboarding</div><div class="q-status">Sắp có câu hỏi</div>
+        <div class="q-prog"><div class="q-prog-fill"></div></div><span class="q-lock">🔒</span>
       </div>
     </div>
   </div>
@@ -893,24 +874,29 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
 
 <!-- CONTACT -->
 <section id="contact">
+  <div class="ct-blob ct-b1"></div>
+  <div class="ct-blob ct-b2"></div>
   <div class="container">
-    <div class="contact-inner fade-up">
+    <div class="ct-inner rv">
       <span class="tag">Liên hệ</span>
       <h2>Làm việc cùng chúng tôi</h2>
       <p>Bạn có thương hiệu cần tăng trưởng đa kênh? Hãy để Media Omni đồng hành cùng bạn.</p>
-      <div class="contact-actions">
-        <a href="mailto:media.omni@upbase.vn" class="btn-white">📧 Gửi email ngay</a>
-        <a href="#" class="btn-outline-white" onclick="openLogin();return false">🔒 Đăng nhập Team Hub</a>
+      <div class="ct-actions">
+        <a href="mailto:media.omni@upbase.vn" class="btn-w">📧 Gửi email ngay</a>
+        <a href="#" class="btn-ow" onclick="openLogin();return false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Đăng nhập Team Hub
+        </a>
       </div>
-      <div class="contact-info">
-        <span class="contact-info-item">📧 media.omni@upbase.vn</span>
-        <span class="contact-info-item">🏢 UpBase Vietnam</span>
+      <div class="ct-info">
+        <span class="ct-info-i">📧 media.omni@upbase.vn</span>
+        <span class="ct-info-i">🏢 UpBase Vietnam</span>
       </div>
-      <div class="social-row">
-        <a href="#" class="social-btn" title="Facebook">f</a>
-        <a href="#" class="social-btn" title="TikTok">♪</a>
-        <a href="#" class="social-btn" title="YouTube">▶</a>
-        <a href="#" class="social-btn" title="LinkedIn">in</a>
+      <div class="soc-row">
+        <a href="#" class="soc-btn" title="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" class="soc-btn" title="TikTok"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.83 1.54V6.77a4.85 4.85 0 0 1-1.07-.08z"/></svg></a>
+        <a href="#" class="soc-btn" title="YouTube"><svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+        <a href="#" class="soc-btn" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
       </div>
     </div>
   </div>
@@ -919,199 +905,207 @@ footer{background:var(--navy);color:rgba(255,255,255,.8);padding:64px 0 32px}
 <!-- FOOTER -->
 <footer>
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="fl-logo">Media<span>Omni</span> <span style="color:rgba(255,255,255,.3);font-weight:400;font-size:.8rem">by UpBase</span></div>
-        <p>Media Omni là team Performance Marketing thuộc UpBase — Ecommerce Enabler hàng đầu Việt Nam, đồng hành cùng thương hiệu và nhà bán hàng tăng trưởng bền vững trên TMĐT.</p>
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <div class="ft-logo">Media<span>Omni</span> <span style="color:rgba(255,255,255,.22);font-weight:400;font-size:.78rem">by UpBase</span></div>
+        <p>Media Omni là team Performance Marketing thuộc UpBase — Ecommerce Enabler hàng đầu Việt Nam, đồng hành cùng thương hiệu tăng trưởng bền vững trên TMĐT.</p>
       </div>
-      <div class="footer-col">
+      <div class="ft-col">
         <h4>Về chúng tôi</h4>
-        <a href="#hero">Giới thiệu</a>
-        <a href="#team">Tuyển dụng</a>
-        <a href="#contact">Liên hệ</a>
+        <a href="#hero">Giới thiệu</a><a href="#team">Đội ngũ</a><a href="#contact">Liên hệ</a>
       </div>
-      <div class="footer-col">
+      <div class="ft-col">
         <h4>Năng lực</h4>
-        <a href="#services">TikTok Ads</a>
-        <a href="#services">Shopee Ads</a>
-        <a href="#services">Meta Ads</a>
-        <a href="#services">Google Ads</a>
-        <a href="#services">Omni-channel</a>
+        <a href="#services">TikTok Ads</a><a href="#services">Shopee Ads</a>
+        <a href="#services">Meta Ads</a><a href="#services">Google Ads</a><a href="#services">Omni-channel</a>
       </div>
-      <div class="footer-col">
+      <div class="ft-col">
         <h4>Tài nguyên</h4>
-        <a href="quiz.html">Quiz Hub</a>
-        <a href="dashboard.html">Team Hub</a>
-        <a href="#">SOP & Process</a>
-        <a href="#">Onboarding</a>
+        <a href="quiz.html">Quiz Hub</a><a href="dashboard.html">Team Hub</a>
+        <a href="#">SOP & Process</a><a href="#">Onboarding</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span class="footer-copy">© 2026 UpBase Media Omni. All rights reserved.</span>
-      <div class="footer-social">
-        <a href="#">f</a>
-        <a href="#">♪</a>
-        <a href="#">▶</a>
-        <a href="#">in</a>
+    <div class="ft-bot">
+      <span class="ft-copy">© 2026 UpBase Media Omni. All rights reserved.</span>
+      <div class="ft-soc">
+        <a href="#" title="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" title="TikTok"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.83 1.54V6.77a4.85 4.85 0 0 1-1.07-.08z"/></svg></a>
+        <a href="#" title="YouTube"><svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+        <a href="#" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
       </div>
     </div>
   </div>
 </footer>
 
 <!-- LOGIN MODAL -->
-<div class="modal-overlay" id="loginModal">
+<div class="modal-ov" id="loginModal">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <button class="modal-x" onclick="closeLogin()">✕</button>
     <div class="modal-logo">
       <div class="ml-name">Media<span>Omni</span></div>
       <div class="ml-sub">Đăng nhập để truy cập Team Hub</div>
     </div>
-    <div class="form-field">
+    <div class="f-field">
       <label>Username</label>
       <input type="text" id="loginUser" placeholder="username" autocomplete="off">
     </div>
-    <div class="form-field">
+    <div class="f-field">
       <label>Password</label>
       <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="modal-submit" onclick="doLogin()">Đăng nhập →</button>
-    <div class="modal-error" id="loginError">Sai username hoặc password. Vui lòng thử lại.</div>
+    <button class="modal-btn" onclick="doLogin()">Đăng nhập →</button>
+    <div class="modal-err" id="loginErr">Sai username hoặc password. Vui lòng thử lại.</div>
   </div>
 </div>
 
 <script>
-// ── USERS ──
-const USERS = {
-  'quangnd':   {pass:'omni2026lead', role:'admin',  name:'Nguyễn Đức Quảng'},
-  'linhntkh':  {pass:'omni2026', role:'member', name:'Nguyễn Trần Khánh Linh'},
-  'duychk':    {pass:'omni2026', role:'member', name:'Chu Khánh Duy'},
-  'ductanh':   {pass:'omni2026', role:'member', name:'Thiều Anh Đức'},
-  'linhdkh':   {pass:'omni2026', role:'member', name:'Đoàn Khánh Linh'},
-  'thaodph':   {pass:'omni2026', role:'member', name:'Đỗ Phương Thảo'},
-  'hangdth':   {pass:'omni2026', role:'member', name:'Đỗ Thị Hằng'},
-  'trungdhu':  {pass:'omni2026', role:'member', name:'Đặng Hữu Trung'},
-  'anhpq':     {pass:'omni2026', role:'member', name:'Phạm Quyền Anh'},
-  'khanhnm':   {pass:'omni2026', role:'member', name:'Nguyễn Minh Khánh'},
-  'ngochb':    {pass:'omni2026', role:'member', name:'Hoàng Bảo Ngọc'},
-  'phuongnm':  {pass:'omni2026', role:'member', name:'Nguyễn Mai Phương'},
-  'upbase':    {pass:'upbase2026', role:'upbase', name:'UpBase Staff'},
+/* ── DATA ── */
+const USERS={
+  'quangnd':{pass:'omni2026lead',role:'admin',name:'Nguyễn Đức Quảng'},
+  'linhntkh':{pass:'omni2026',role:'member',name:'Nguyễn Trần Khánh Linh'},
+  'duychk':{pass:'omni2026',role:'member',name:'Chu Khánh Duy'},
+  'ductanh':{pass:'omni2026',role:'member',name:'Thiều Anh Đức'},
+  'linhdkh':{pass:'omni2026',role:'member',name:'Đoàn Khánh Linh'},
+  'thaodph':{pass:'omni2026',role:'member',name:'Đỗ Phương Thảo'},
+  'hangdth':{pass:'omni2026',role:'member',name:'Đỗ Thị Hằng'},
+  'trungdhu':{pass:'omni2026',role:'member',name:'Đặng Hữu Trung'},
+  'anhpq':{pass:'omni2026',role:'member',name:'Phạm Quyền Anh'},
+  'khanhnm':{pass:'omni2026',role:'member',name:'Nguyễn Minh Khánh'},
+  'ngochb':{pass:'omni2026',role:'member',name:'Hoàng Bảo Ngọc'},
+  'phuongnm':{pass:'omni2026',role:'member',name:'Nguyễn Mai Phương'},
+  'upbase':{pass:'upbase2026',role:'upbase',name:'UpBase Staff'},
 };
-
-// ── TEAM ──
-const TEAM = [
-  {name:'Nguyễn Đức Quảng',      role:'Leader',                    leader:true},
+const TEAM=[
+  {name:'Nguyễn Đức Quảng',role:'Leader',leader:true},
   {name:'Nguyễn Trần Khánh Linh',role:'Digital Marketing Executive'},
-  {name:'Chu Khánh Duy',          role:'Digital Marketing Executive'},
-  {name:'Thiều Anh Đức',          role:'Digital Marketing Executive'},
-  {name:'Đoàn Khánh Linh',        role:'Digital Marketing Executive'},
-  {name:'Đỗ Phương Thảo',         role:'Digital Marketing Executive'},
-  {name:'Đỗ Thị Hằng',            role:'Digital Marketing Executive'},
-  {name:'Đặng Hữu Trung',         role:'Digital Marketing Executive'},
-  {name:'Phạm Quyền Anh',         role:'Digital Marketing Executive'},
-  {name:'Nguyễn Minh Khánh',      role:'Digital Marketing Executive'},
-  {name:'Hoàng Bảo Ngọc',         role:'Digital Marketing Executive'},
-  {name:'Nguyễn Mai Phương',       role:'Digital Marketing Executive'},
+  {name:'Chu Khánh Duy',role:'Digital Marketing Executive'},
+  {name:'Thiều Anh Đức',role:'Digital Marketing Executive'},
+  {name:'Đoàn Khánh Linh',role:'Digital Marketing Executive'},
+  {name:'Đỗ Phương Thảo',role:'Digital Marketing Executive'},
+  {name:'Đỗ Thị Hằng',role:'Digital Marketing Executive'},
+  {name:'Đặng Hữu Trung',role:'Digital Marketing Executive'},
+  {name:'Phạm Quyền Anh',role:'Digital Marketing Executive'},
+  {name:'Nguyễn Minh Khánh',role:'Digital Marketing Executive'},
+  {name:'Hoàng Bảo Ngọc',role:'Digital Marketing Executive'},
+  {name:'Nguyễn Mai Phương',role:'Digital Marketing Executive'},
 ];
 
-// Render team
-function renderTeam(){
-  const el = document.getElementById('teamScroll');
-  el.innerHTML = TEAM.map(m=>{
-    const initials = m.name.split(' ').slice(-2).map(w=>w[0]).join('');
-    return `<div class="team-card">
-      <div class="team-avatar ${m.leader?'avatar-leader':'avatar-member'}">${initials}</div>
-      <div class="team-name">${m.name}</div>
-      <div class="team-role-text">${m.role}</div>
-      <span class="team-badge-pill ${m.leader?'badge-leader':'badge-member'}">${m.leader?'★ Leader':'Member'}</span>
-    </div>`;
-  }).join('');
-}
-
-// ── NAV SCROLL ──
-const nav = document.getElementById('mainNav');
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a:not(.nav-cta)');
-
+/* ── SCROLL PROGRESS ── */
+const sp=document.getElementById('sp');
 window.addEventListener('scroll',()=>{
-  nav.classList.toggle('scrolled', window.scrollY > 20);
-  let cur = '';
-  sections.forEach(s=>{
-    if(window.scrollY >= s.offsetTop - 100) cur = s.id;
-  });
-  navLinks.forEach(a=>{
-    a.classList.remove('active');
-    if(a.getAttribute('href')==='#'+cur) a.classList.add('active');
-  });
+  const max=document.documentElement.scrollHeight-window.innerHeight;
+  sp.style.width=(window.scrollY/max*100)+'%';
+},{passive:true});
+
+/* ── NAV ── */
+const nav=document.getElementById('mainNav');
+const secs=document.querySelectorAll('section[id]');
+const nls=document.querySelectorAll('.nav-links a:not(.nav-cta)');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>20);
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id});
+  nls.forEach(a=>{a.classList.remove('active');if(a.getAttribute('href')==='#'+cur)a.classList.add('active');});
+},{passive:true});
+
+/* ── REVEAL OBSERVER ── */
+const rvEls=document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s');
+const rvObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');rvObs.unobserve(e.target);}});
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+rvEls.forEach(el=>rvObs.observe(el));
+
+/* ── COUNT-UP (with suffix fix & easeOutExpo) ── */
+document.querySelectorAll('[data-target]').forEach(el=>{
+  new IntersectionObserver(es=>{
+    if(!es[0].isIntersecting)return;
+    const target=+el.dataset.target,suffix=el.dataset.suffix||'';
+    const dur=1800,start=performance.now();
+    const tick=now=>{
+      const p=Math.min((now-start)/dur,1);
+      const e=p===1?1:1-Math.pow(2,-10*p);
+      el.textContent=Math.floor(e*target)+suffix;
+      if(p<1)requestAnimationFrame(tick);
+      else el.textContent=target+suffix;
+    };
+    requestAnimationFrame(tick);
+    es[0].target._ob.disconnect();
+  },{threshold:0.5}).observe(el);
+  // store ref for disconnect
+  const ob=new IntersectionObserver(es=>{
+    if(!es[0].isIntersecting)return;
+    const target=+el.dataset.target,suffix=el.dataset.suffix||'';
+    const dur=1800,start=performance.now();
+    const tick=now=>{
+      const p=Math.min((now-start)/dur,1);
+      const ease=p===1?1:1-Math.pow(2,-10*p);
+      el.textContent=Math.floor(ease*target)+suffix;
+      if(p<1)requestAnimationFrame(tick);
+      else el.textContent=target+suffix;
+    };
+    requestAnimationFrame(tick);
+    ob.disconnect();
+  },{threshold:0.5});
+  ob.observe(el);
 });
 
-// ── FADE UP ON SCROLL ──
-const fadeEls = document.querySelectorAll('.fade-up');
-const io = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible')}});
-},{threshold:0.12});
-fadeEls.forEach(el=>io.observe(el));
-
-// ── COUNT UP ──
-const countEls = document.querySelectorAll('[data-target]');
-const cio = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(!e.isIntersecting) return;
-    const el = e.target;
-    const target = +el.dataset.target;
-    let current = 0;
-    const step = target / 40;
-    const timer = setInterval(()=>{
-      current = Math.min(current+step, target);
-      el.textContent = Math.floor(current);
-      if(current >= target) clearInterval(timer);
-    }, 30);
-    cio.unobserve(el);
-  });
-},{threshold:0.5});
-countEls.forEach(el=>cio.observe(el));
-
-// ── LOGIN ──
-function openLogin(){
-  document.getElementById('loginModal').classList.add('active');
-  setTimeout(()=>document.getElementById('loginUser').focus(),100);
+/* ── TEAM ── */
+function renderTeam(){
+  const sc=document.getElementById('tsScroll');
+  const dt=document.getElementById('tsDots');
+  const wr=document.getElementById('tsWrap');
+  sc.innerHTML=TEAM.map(m=>{
+    const ini=m.name.split(' ').slice(-2).map(w=>w[0]).join('');
+    return`<div class="tc"><div class="tc-av ${m.leader?'av-lead':'av-memb'}">${ini}</div>
+      <div class="tc-name">${m.name}</div><div class="tc-role">${m.role}</div>
+      <span class="tc-badge ${m.leader?'b-lead':'b-memb'}">${m.leader?'★ Leader':'Member'}</span></div>`;
+  }).join('');
+  const DOTS=6;
+  dt.innerHTML=Array.from({length:DOTS},(_,i)=>
+    `<div class="ts-dot${i===0?' active':''}" onclick="scrollTeam(${i})"></div>`).join('');
+  wr.addEventListener('scroll',()=>{
+    const pct=wr.scrollLeft/(wr.scrollWidth-wr.clientWidth);
+    const idx=Math.round(pct*(DOTS-1));
+    document.querySelectorAll('.ts-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  },{passive:true});
+  /* drag scroll */
+  let down=false,sx,sl;
+  wr.addEventListener('mousedown',e=>{down=true;sx=e.pageX-wr.offsetLeft;sl=wr.scrollLeft;});
+  wr.addEventListener('mouseleave',()=>down=false);
+  wr.addEventListener('mouseup',()=>down=false);
+  wr.addEventListener('mousemove',e=>{if(!down)return;e.preventDefault();wr.scrollLeft=sl-(e.pageX-wr.offsetLeft-sx)*1.5;});
 }
-function closeLogin(){
-  document.getElementById('loginModal').classList.remove('active');
-  document.getElementById('loginError').style.display='none';
-  document.getElementById('loginUser').value='';
-  document.getElementById('loginPass').value='';
+function scrollTeam(i){
+  const wr=document.getElementById('tsWrap');
+  wr.scrollTo({left:(i/5)*(wr.scrollWidth-wr.clientWidth),behavior:'smooth'});
 }
+
+/* ── MOBILE NAV ── */
+function toggleMob(){
+  const m=document.getElementById('navMob'),o=document.getElementById('mobOverlay'),t=document.getElementById('navToggle');
+  const open=m.classList.toggle('open');
+  o.classList.toggle('open',open);t.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+}
+function closeMob(){
+  ['navMob','mobOverlay'].forEach(id=>document.getElementById(id).classList.remove('open'));
+  document.getElementById('navToggle').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ── LOGIN ── */
+function openLogin(){document.getElementById('loginModal').classList.add('active');setTimeout(()=>document.getElementById('loginUser').focus(),150);}
+function closeLogin(){document.getElementById('loginModal').classList.remove('active');document.getElementById('loginErr').style.display='none';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';}
 function doLogin(){
-  const u = document.getElementById('loginUser').value.trim().toLowerCase();
-  const p = document.getElementById('loginPass').value;
-  const user = USERS[u];
-  if(user && user.pass===p){
-    sessionStorage.setItem('mo_user', JSON.stringify({username:u,...user}));
-    closeLogin();
-    window.location.href='dashboard.html';
-  } else {
-    document.getElementById('loginError').style.display='block';
-  }
+  const u=document.getElementById('loginUser').value.trim().toLowerCase();
+  const p=document.getElementById('loginPass').value;
+  const user=USERS[u];
+  if(user&&user.pass===p){sessionStorage.setItem('mo_user',JSON.stringify({username:u,...user}));closeLogin();window.location.href='dashboard.html';}
+  else{document.getElementById('loginErr').style.display='block';document.getElementById('loginPass').value='';document.getElementById('loginPass').focus();}
 }
-document.getElementById('loginModal').addEventListener('click',function(e){
-  if(e.target===this) closeLogin();
-});
+document.getElementById('loginModal').addEventListener('click',function(e){if(e.target===this)closeLogin();});
 
-// ── MOBILE NAV ──
-function toggleMobileNav(){
-  const nl = document.getElementById('navLinks');
-  nl.style.display = nl.style.display==='flex'?'none':'flex';
-  nl.style.flexDirection='column';
-  nl.style.position='absolute';
-  nl.style.top='68px';
-  nl.style.left='0';nl.style.right='0';
-  nl.style.background='#fff';
-  nl.style.padding='1rem 1.5rem';
-  nl.style.borderBottom='1px solid var(--border)';
-  nl.style.boxShadow='var(--shadow-md)';
-}
-
-// ── INIT ──
+/* ── INIT ── */
 renderTeam();
 </script>
 </body>
