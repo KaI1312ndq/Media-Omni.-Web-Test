@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Tasks — Media Omni</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232563EB'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='18' font-weight='800' fill='white' font-family='Arial'>T</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --p:#2563EB;--pb:#3B82F6;--soft:#DBEAFE;--pale:#EFF6FF;
+  --navy:#0F172A;--slate:#64748B;--bd:#E2EAFF;--w:#FFFFFF;
+  --acc:#FF5A2A;--g:#10B981;--r:#EF4444;--y:#F59E0B;--purple:#6366f1;
+  --sh1:0 2px 8px rgba(15,23,42,.06);--sh2:0 8px 32px rgba(15,23,42,.1);
+  --r1:8px;--r2:12px;--r3:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--pale);color:var(--navy);min-height:100vh}
+
+/* NAV */
+.nav{background:var(--w);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh1)}
+.nav-i{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{font-size:.95rem;font-weight:800;color:var(--navy);text-decoration:none;flex-shrink:0}
+.nav-logo span{color:var(--p)}
+.nav-tabs{display:flex;align-items:center;gap:.25rem;flex:1;justify-content:center}
+.nav-tab{padding:.5rem 1rem;border-radius:var(--r1);font-size:.82rem;font-weight:600;cursor:pointer;border:none;background:none;color:var(--slate);font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.nav-tab:hover{background:var(--pale);color:var(--navy)}
+.nav-tab.active{background:var(--soft);color:var(--p)}
+.nav-r{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.nav-user{font-size:.82rem;font-weight:600;color:var(--slate)}
+.nav-bk{font-size:.82rem;color:var(--p);text-decoration:none;font-weight:600;padding:.4rem .75rem;border:1px solid var(--soft);border-radius:var(--r1);background:var(--pale);white-space:nowrap}
+
+/* PAGES */
+.page{display:none;max-width:1200px;margin:0 auto;padding:1.5rem 24px}
+.page.on{display:block}
+
+/* DATE BAR */
+.date-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
+.date-bar h1{font-size:1.35rem;font-weight:800;letter-spacing:-.02em}
+.date-bar h1 span{color:var(--p)}
+.date-nav{display:flex;align-items:center;gap:.5rem}
+.date-btn{width:34px;height:34px;border-radius:var(--r1);border:1px solid var(--bd);background:var(--w);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.date-btn:hover{border-color:var(--p);color:var(--p)}
+.date-today{font-size:.78rem;font-weight:700;padding:.4rem .875rem;border-radius:var(--r1);border:1px solid var(--bd);background:var(--w);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--slate);transition:all .15s}
+.date-today:hover{border-color:var(--p);color:var(--p)}
+.date-label{font-size:.875rem;font-weight:700;color:var(--navy);min-width:140px;text-align:center}
+
+/* MY DAY LAYOUT */
+.myday-grid{display:grid;grid-template-columns:1fr 300px;gap:1.25rem;align-items:start}
+.timeline{background:var(--w);border:1px solid var(--bd);border-radius:var(--r3);overflow:hidden}
+.tl-head{padding:1.1rem 1.5rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.tl-title{font-size:.875rem;font-weight:700}
+.tl-count{font-size:.72rem;font-weight:700;padding:.2rem .6rem;border-radius:999px;background:var(--soft);color:var(--p)}
+.tl-body{padding:.75rem 0}
+.tl-slot{display:flex;gap:0;min-height:60px;position:relative}
+.tl-slot:not(:last-child){border-bottom:1px dashed var(--bd)}
+.tl-time{width:70px;padding:.875rem .75rem;font-size:.7rem;font-weight:700;color:var(--slate);text-align:right;flex-shrink:0;padding-top:.75rem}
+.tl-line{width:1px;background:var(--bd);position:relative;flex-shrink:0}
+.tl-line::before{content:'';position:absolute;top:.875rem;left:-3px;width:7px;height:7px;border-radius:50%;background:var(--bd)}
+.tl-tasks{flex:1;padding:.5rem .75rem;display:flex;flex-direction:column;gap:.35rem}
+.tl-empty{color:var(--slate);font-size:.75rem;padding:.625rem 0;font-style:italic}
+
+/* TASK CARD */
+.task-card{border-radius:var(--r2);padding:.75rem 1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.task-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.tc-high{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15)}
+.tc-high::before{background:var(--r)}
+.tc-medium{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15)}
+.tc-medium::before{background:var(--y)}
+.tc-low{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15)}
+.tc-low::before{background:var(--g)}
+.task-card:hover{transform:translateY(-1px);box-shadow:var(--sh1)}
+.task-card.done{opacity:.55}
+.task-card.done .tc-name{text-decoration:line-through}
+.tc-top{display:flex;align-items:flex-start;gap:.625rem;margin-bottom:.35rem}
+.tc-check{width:18px;height:18px;border-radius:5px;border:2px solid var(--bd);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;background:var(--w)}
+.tc-check.checked{background:var(--g);border-color:var(--g);color:var(--w)}
+.tc-check.checked::after{content:'✓';font-size:.6rem;font-weight:800}
+.tc-name{font-size:.845rem;font-weight:600;line-height:1.4;flex:1}
+.tc-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.tc-time{font-size:.7rem;color:var(--slate);display:flex;align-items:center;gap:.2rem}
+.tc-by{font-size:.68rem;font-weight:600;padding:.15rem .5rem;border-radius:999px;background:var(--pale);color:var(--slate)}
+.tc-pri{font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}
+.pri-high{background:rgba(239,68,68,.1);color:var(--r)}
+.pri-medium{background:rgba(245,158,11,.1);color:var(--y)}
+.pri-low{background:rgba(16,185,129,.1);color:var(--g)}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:1rem}
+.scard{background:var(--w);border:1px solid var(--bd);border-radius:var(--r3);padding:1.25rem}
+.scard-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-bottom:1rem}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.stat-i{background:var(--pale);border-radius:var(--r2);padding:.75rem;text-align:center}
+.stat-v{font-size:1.5rem;font-weight:800;color:var(--navy)}
+.stat-l{font-size:.65rem;color:var(--slate);font-weight:600;margin-top:.15rem}
+.progress-ring{text-align:center;margin-bottom:.875rem}
+.progress-ring svg{transform:rotate(-90deg)}
+.pr-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pr-pct{font-size:1.25rem;font-weight:800;color:var(--p)}
+.pr-lbl{font-size:.6rem;color:var(--slate);font-weight:600}
+.pr-wrap{position:relative;display:inline-block}
+.upcoming-list{display:flex;flex-direction:column;gap:.5rem}
+.up-item{display:flex;align-items:center;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--bd)}
+.up-item:last-child{border:none}
+.up-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.up-name{font-size:.8rem;font-weight:600;flex:1;line-height:1.3}
+.up-time{font-size:.68rem;color:var(--slate)}
+
+/* TEAM CALENDAR */
+.cal-wrap{background:var(--w);border:1px solid var(--bd);border-radius:var(--r3);overflow:hidden}
+.cal-head{display:grid;gap:0;border-bottom:1px solid var(--bd)}
+.cal-head-cell{padding:.875rem .75rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);background:var(--pale);border-right:1px solid var(--bd);text-align:center}
+.cal-head-cell:last-child{border-right:none}
+.cal-row{display:grid;border-bottom:1px solid var(--bd)}
+.cal-row:last-child{border-bottom:none}
+.cal-row:hover{background:rgba(239,246,255,.5)}
+.cal-member{padding:.875rem 1rem;font-size:.82rem;font-weight:700;border-right:1px solid var(--bd);display:flex;align-items:center;gap:.5rem;background:var(--pale)}
+.cal-avatar{width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--p);font-size:.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cal-cell{padding:.5rem .625rem;border-right:1px solid var(--bd);min-height:60px}
+.cal-cell:last-child{border-right:none}
+.cal-task-mini{font-size:.7rem;font-weight:600;padding:.2rem .5rem;border-radius:6px;margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.ctm-h{background:rgba(239,68,68,.1);color:var(--r)}
+.ctm-m{background:rgba(245,158,11,.1);color:var(--y)}
+.ctm-l{background:rgba(16,185,129,.1);color:var(--g)}
+.cal-day-hdr{display:flex;align-items:center;justify-content:space-between;padding:.625rem 1rem;border-bottom:1px solid var(--bd);background:var(--pale)}
+.cal-day-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate)}
+.cal-wk-nav{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+.cal-wk-label{font-size:.875rem;font-weight:700;flex:1;text-align:center}
+
+/* CREATE FORM */
+.form-wrap{max-width:640px;margin:0 auto;background:var(--w);border:1px solid var(--bd);border-radius:var(--r3);padding:2rem}
+.form-title{font-size:1.1rem;font-weight:800;margin-bottom:.35rem}
+.form-sub{font-size:.845rem;color:var(--slate);margin-bottom:1.75rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.fg-full{grid-column:span 2}
+.fl{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);margin-bottom:.5rem}
+.fi{width:100%;padding:.75rem 1rem;background:var(--pale);border:1.5px solid var(--bd);border-radius:var(--r1);color:var(--navy);font-family:'Plus Jakarta Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s}
+.fi:focus{border-color:var(--p);background:var(--w)}
+select.fi{cursor:pointer}
+textarea.fi{resize:vertical;min-height:80px}
+.form-actions{display:flex;gap:.75rem;margin-top:1.5rem}
+.btn-submit{flex:1;padding:.875rem;background:var(--p);color:var(--w);border:none;border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.875rem;cursor:pointer;transition:background .2s}
+.btn-submit:hover{background:var(--pb)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+.btn-cancel{padding:.875rem 1.25rem;background:none;border:1.5px solid var(--bd);border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.875rem;cursor:pointer;color:var(--slate);transition:border-color .2s}
+.btn-cancel:hover{border-color:var(--r);color:var(--r)}
+.form-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:var(--r2);padding:1rem;text-align:center;font-size:.875rem;font-weight:600;color:var(--g);display:none;margin-top:1rem}
+
+/* EMPTY STATE */
+.empty{padding:3rem;text-align:center;color:var(--slate)}
+.empty-ic{font-size:2.5rem;margin-bottom:.75rem}
+.empty-tt{font-size:.95rem;font-weight:700;margin-bottom:.35rem;color:var(--navy)}
+.empty-sb{font-size:.82rem;line-height:1.6}
+
+/* LOADING */
+.loading{padding:2rem;text-align:center;color:var(--slate);font-size:.875rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--navy);color:var(--w);padding:.75rem 1.25rem;border-radius:var(--r2);font-size:.82rem;font-weight:600;display:none;align-items:center;gap:.5rem;box-shadow:var(--sh2);z-index:999;animation:slideUp .3s ease}
+.toast.show{display:flex}
+.toast.ok{background:var(--g)}
+.toast.err{background:var(--r)}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* TASK DETAIL POPUP */
+.popup-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.popup-bg.on{display:flex}
+.popup{background:var(--w);border:1px solid var(--bd);border-radius:var(--r3);padding:1.75rem;max-width:400px;width:100%;box-shadow:var(--sh2)}
+.pu-tt{font-size:1rem;font-weight:800;margin-bottom:1rem}
+.pu-row{display:flex;gap:.5rem;margin-bottom:.5rem;font-size:.82rem}
+.pu-lbl{color:var(--slate);font-weight:600;width:90px;flex-shrink:0}
+.pu-val{color:var(--navy);font-weight:500;flex:1}
+.pu-close{width:100%;padding:.75rem;margin-top:1.25rem;background:var(--pale);border:1px solid var(--bd);border-radius:var(--r1);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.845rem;color:var(--slate);transition:border-color .2s}
+.pu-close:hover{border-color:var(--p);color:var(--p)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .myday-grid{grid-template-columns:1fr}
+  .sidebar{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+}
+@media(max-width:768px){
+  .page{padding:1rem 16px}
+  .nav-i{padding:0 16px}
+  .nav-tabs{gap:0}
+  .nav-tab{padding:.5rem .625rem;font-size:.75rem}
+  .myday-grid{grid-template-columns:1fr}
+  .sidebar{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .fg-full{grid-column:span 1}
+  .date-bar{flex-direction:column;align-items:flex-start}
+  .cal-head,.cal-row{grid-template-columns:100px repeat(3,1fr)}
+  .nav-user{display:none}
+}
+@media(max-width:480px){
+  .nav-tab span{display:none}
+  .form-actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-i">
+    <a href="../dashboard.html" class="nav-logo">Media<span>Omni</span></a>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('myday',this)">
+        <span>📅 </span>My Day
+      </button>
+      <button class="nav-tab" onclick="switchTab('team',this)">
+        <span>👥 </span>Team
+      </button>
+      <button class="nav-tab" onclick="switchTab('create',this)">
+        <span>➕ </span>Tạo task
+      </button>
+    </div>
+    <div class="nav-r">
+      <span class="nav-user" id="navUser"></span>
+      <a href="../dashboard.html" class="nav-bk">← Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<div class="toast" id="toast"><span id="toastTxt"></span></div>
+
+<!-- MY DAY -->
+<div id="mydayPage" class="page on">
+  <div class="date-bar">
+    <h1>My Day — <span id="mdDateLabel"></span></h1>
+    <div class="date-nav">
+      <button class="date-btn" onclick="changeDate(-1)">←</button>
+      <span class="date-label" id="mdDateFull"></span>
+      <button class="date-btn" onclick="changeDate(1)">→</button>
+      <button class="date-today" onclick="goToday()">Hôm nay</button>
+    </div>
+  </div>
+  <div class="myday-grid">
+    <div class="timeline">
+      <div class="tl-head">
+        <span class="tl-title">Timeline trong ngày</span>
+        <span class="tl-count" id="taskCount">0 tasks</span>
+      </div>
+      <div class="tl-body" id="tlBody">
+        <div class="loading">⏳ Đang tải...</div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="scard">
+        <div class="scard-title">Tiến độ hôm nay</div>
+        <div class="progress-ring">
+          <div class="pr-wrap">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#E2EAFF" stroke-width="8"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#2563EB" stroke-width="8"
+                stroke-dasharray="251" stroke-dashoffset="251" id="progCircle"
+                stroke-linecap="round" style="transition:stroke-dashoffset .6s ease"/>
+            </svg>
+            <div class="pr-txt">
+              <div class="pr-pct" id="progPct">0%</div>
+              <div class="pr-lbl">Hoàn thành</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-i"><div class="stat-v" id="sDone">0</div><div class="stat-l">Xong</div></div>
+          <div class="stat-i"><div class="stat-v" id="sLeft">0</div><div class="stat-l">Còn lại</div></div>
+        </div>
+      </div>
+      <div class="scard">
+        <div class="scard-title">Sắp tới hôm nay</div>
+        <div class="upcoming-list" id="upcomingList">
+          <div style="font-size:.8rem;color:var(--slate)">Đang tải...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM CALENDAR -->
+<div id="teamPage" class="page">
+  <div class="date-bar">
+    <h1>Team <span>Calendar</span></h1>
+    <div class="date-nav">
+      <button class="date-btn" onclick="changeWeek(-1)">←</button>
+      <span class="date-label" id="wkLabel">Tuần này</span>
+      <button class="date-btn" onclick="changeWeek(1)">→</button>
+      <button class="date-today" onclick="goThisWeek()">Tuần này</button>
+    </div>
+  </div>
+  <div id="calWrap"><div class="loading">⏳ Đang tải...</div></div>
+</div>
+
+<!-- CREATE TASK -->
+<div id="createPage" class="page">
+  <div class="form-wrap">
+    <div class="form-title">Tạo task mới</div>
+    <div class="form-sub">Assign task cho bản thân hoặc thành viên khác trong team.</div>
+    <div class="form-grid">
+      <div class="fg-full">
+        <label class="fl">Tên task *</label>
+        <input class="fi" id="fTask" type="text" placeholder="VD: Review creative TikTok Shop Vitabiotics">
+      </div>
+      <div class="fg-full">
+        <label class="fl">Mô tả chi tiết</label>
+        <textarea class="fi" id="fDesc" placeholder="Ghi chú thêm nếu cần..."></textarea>
+      </div>
+      <div>
+        <label class="fl">Assign cho *</label>
+        <select class="fi" id="fAssignee"></select>
+      </div>
+      <div>
+        <label class="fl">Ngày *</label>
+        <input class="fi" id="fDate" type="date">
+      </div>
+      <div>
+        <label class="fl">Giờ bắt đầu</label>
+        <input class="fi" id="fStart" type="time" value="09:00">
+      </div>
+      <div>
+        <label class="fl">Giờ kết thúc</label>
+        <input class="fi" id="fEnd" type="time" value="10:00">
+      </div>
+      <div class="fg-full">
+        <label class="fl">Mức độ ưu tiên</label>
+        <select class="fi" id="fPri">
+          <option value="high">🔴 Cao — Cần làm ngay</option>
+          <option value="medium" selected>🟡 Trung bình — Trong ngày</option>
+          <option value="low">🟢 Thấp — Khi rảnh</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="switchTab('myday',document.querySelector('.nav-tab'))">Huỷ</button>
+      <button class="btn-submit" id="submitBtn" onclick="createTask()">Tạo task →</button>
+    </div>
+    <div class="form-success" id="formSuccess">✅ Task đã được tạo và lưu vào hệ thống!</div>
+  </div>
+</div>
+
+<!-- TASK DETAIL POPUP -->
+<div class="popup-bg" id="taskPopup">
+  <div class="popup">
+    <div class="pu-tt" id="puTitle"></div>
+    <div class="pu-row"><span class="pu-lbl">Assignee</span><span class="pu-val" id="puAssignee"></span></div>
+    <div class="pu-row"><span class="pu-lbl">Thời gian</span><span class="pu-val" id="puTime"></span></div>
+    <div class="pu-row"><span class="pu-lbl">Ưu tiên</span><span class="pu-val" id="puPri"></span></div>
+    <div class="pu-row"><span class="pu-lbl">Tạo bởi</span><span class="pu-val" id="puBy"></span></div>
+    <div class="pu-row" id="puDescRow"><span class="pu-lbl">Mô tả</span><span class="pu-val" id="puDesc"></span></div>
+    <button class="pu-close" onclick="closePopup()">Đóng</button>
+  </div>
+</div>
+
+<script>
+const SHEETS='https://script.google.com/macros/s/AKfycbzfhieuPGmlExR0-Dv6DRT2cqG1gEdJsc1VzRy6-Jdc4wjkEiPXlPh5zKNCO2O6BCwz/exec';
+
+const USERS={
+  'quangnd':{name:'Nguyễn Đức Quảng',role:'admin'},
+  'linhntkh':{name:'Nguyễn Trần Khánh Linh',role:'member'},
+  'duychk':{name:'Chu Khánh Duy',role:'member'},
+  'ductanh':{name:'Thiều Anh Đức',role:'member'},
+  'linhdkh':{name:'Đoàn Khánh Linh',role:'member'},
+  'thaodph':{name:'Đỗ Phương Thảo',role:'member'},
+  'hangdth':{name:'Đỗ Thị Hằng',role:'member'},
+  'trungdhu':{name:'Đặng Hữu Trung',role:'member'},
+  'anhpq':{name:'Phạm Quyền Anh',role:'member'},
+  'khanhnm':{name:'Nguyễn Minh Khánh',role:'member'},
+  'ngochb':{name:'Hoàng Bảo Ngọc',role:'member'},
+  'phuongnm':{name:'Nguyễn Mai Phương',role:'member'},
+};
+
+// AUTH
+let CU=null;
+try{const s=sessionStorage.getItem('mo_user');if(s)CU=JSON.parse(s);}catch(e){}
+if(!CU)window.location.href='../dashboard.html';
+else document.getElementById('navUser').textContent=CU.name;
+
+// STATE
+let curDate=new Date();
+let curWeekOffset=0;
+let allTasks=[];
+let todayTasks=[];
+
+// HELPERS
+const fmtDateKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const fmtDateVI=d=>d.toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+const fmtDateShort=d=>d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'});
+const initials=name=>name.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
+const priLabel={high:'Cao',medium:'Trung bình',low:'Thấp'};
+const priCls={high:'pri-high',medium:'pri-medium',low:'pri-low'};
+const cardCls={high:'tc-high',medium:'tc-medium',low:'tc-low'};
+const miniCls={high:'ctm-h',medium:'ctm-m',low:'ctm-l'};
+const dotColor={high:'var(--r)',medium:'var(--y)',low:'var(--g)'};
+
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  document.getElementById('toastTxt').textContent=msg;
+  t.className='toast show '+(type==='ok'?'ok':'err');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// TABS
+function switchTab(tab,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tab+'Page').classList.add('on');
+  if(btn)btn.classList.add('active');
+  if(tab==='myday')loadMyDay();
+  if(tab==='team')loadTeamCal();
+}
+
+// DATE NAV
+function updateDateDisplay(){
+  const days=['CN','T2','T3','T4','T5','T6','T7'];
+  const d=curDate;
+  document.getElementById('mdDateLabel').textContent=days[d.getDay()];
+  document.getElementById('mdDateFull').textContent=fmtDateShort(d)+' / '+d.getFullYear();
+}
+function changeDate(n){
+  curDate=new Date(curDate);curDate.setDate(curDate.getDate()+n);
+  updateDateDisplay();loadMyDay();
+}
+function goToday(){curDate=new Date();updateDateDisplay();loadMyDay();}
+
+// LOAD MY DAY
+async function loadMyDay(){
+  updateDateDisplay();
+  document.getElementById('tlBody').innerHTML='<div class="loading">⏳ Đang tải...</div>';
+  const dateKey=fmtDateKey(curDate);
+  try{
+    const r=await fetch(`${SHEETS}?type=tasks&date=${dateKey}&assignee=${CU.username}`);
+    const j=await r.json();
+    todayTasks=j.data||[];
+    renderTimeline(todayTasks);
+    renderSidebar(todayTasks);
+  }catch(e){
+    document.getElementById('tlBody').innerHTML='<div class="loading">❌ Không tải được dữ liệu.</div>';
+  }
+}
+
+function renderTimeline(tasks){
+  const hours=['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
+  document.getElementById('taskCount').textContent=tasks.length+' task'+(tasks.length!==1?'s':'');
+  const noTime=tasks.filter(t=>!t['Giờ bắt đầu']);
+  let html='';
+  if(noTime.length){
+    html+=`<div style="padding:.5rem 1rem .25rem;font-size:.68rem;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.08em">Không có giờ cụ thể</div>`;
+    noTime.forEach(t=>{html+=renderTaskCard(t);});
+    html+=`<div style="height:1px;background:var(--bd);margin:.75rem 0"></div>`;
+  }
+  hours.forEach(h=>{
+    const slot=tasks.filter(t=>{
+      if(!t['Giờ bắt đầu'])return false;
+      return t['Giờ bắt đầu'].substring(0,5)===h;
+    });
+    html+=`<div class="tl-slot">
+      <div class="tl-time">${h}</div>
+      <div class="tl-line"></div>
+      <div class="tl-tasks">
+        ${slot.length?slot.map(t=>renderTaskCard(t)).join(''):'<div class="tl-empty">Trống</div>'}
+      </div>
+    </div>`;
+  });
+  document.getElementById('tlBody').innerHTML=html||'<div class="empty"><div class="empty-ic">📭</div><div class="empty-tt">Không có task nào</div><div class="empty-sb">Hôm nay chưa có task nào được assign cho bạn.</div></div>';
+}
+
+function renderTaskCard(t){
+  const done=t['Status']==='done';
+  const pri=t['Priority']||'medium';
+  const id=t['ID']||'';
+  return `<div class="task-card ${cardCls[pri]||'tc-medium'} ${done?'done':''}" onclick="showDetail('${id}')">
+    <div class="tc-top">
+      <div class="tc-check ${done?'checked':''}" onclick="event.stopPropagation();toggleTask('${id}',this)"></div>
+      <div class="tc-name">${t['Task']||'—'}</div>
+    </div>
+    <div class="tc-meta">
+      ${t['Giờ bắt đầu']?`<span class="tc-time">⏰ ${t['Giờ bắt đầu']}${t['Giờ kết thúc']?' – '+t['Giờ kết thúc']:''}</span>`:''}
+      <span class="tc-by">${t['Created Name']?t['Created Name'].split(' ').pop():''}</span>
+      <span class="tc-pri ${priCls[pri]||'pri-medium'}">${priLabel[pri]||pri}</span>
+    </div>
+  </div>`;
+}
+
+function renderSidebar(tasks){
+  const done=tasks.filter(t=>t['Status']==='done').length;
+  const total=tasks.length;
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('progCircle').style.strokeDashoffset=251-(251*pct/100);
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('sDone').textContent=done;
+  document.getElementById('sLeft').textContent=total-done;
+  // Upcoming = tasks chưa done có giờ, sort theo giờ
+  const now=new Date();
+  const nowHH=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const upcoming=tasks.filter(t=>t['Status']!=='done'&&t['Giờ bắt đầu']&&t['Giờ bắt đầu']>=nowHH).sort((a,b)=>a['Giờ bắt đầu'].localeCompare(b['Giờ bắt đầu'])).slice(0,4);
+  const ul=document.getElementById('upcomingList');
+  if(!upcoming.length){ul.innerHTML='<div style="font-size:.8rem;color:var(--slate)">Không còn task nào hôm nay.</div>';return;}
+  ul.innerHTML=upcoming.map(t=>`<div class="up-item">
+    <div class="up-dot" style="background:${dotColor[t['Priority']||'medium']}"></div>
+    <div class="up-name">${t['Task']||'—'}</div>
+    <div class="up-time">${t['Giờ bắt đầu']||''}</div>
+  </div>`).join('');
+}
+
+// TOGGLE TASK DONE
+async function toggleTask(id,el){
+  if(!id)return;
+  const isDone=el.classList.contains('checked');
+  const newStatus=isDone?'todo':'done';
+  el.classList.toggle('checked');
+  const card=el.closest('.task-card');
+  if(card)card.classList.toggle('done',!isDone);
+  try{
+    await fetch(SHEETS,{method:'POST',body:JSON.stringify({type:'task_update',id,status:newStatus})});
+    // Update local state
+    const t=todayTasks.find(x=>x['ID']===id);
+    if(t)t['Status']=newStatus;
+    renderSidebar(todayTasks);
+    showToast(newStatus==='done'?'✅ Đã hoàn thành!':'↩ Đã mở lại task');
+  }catch(e){showToast('Lỗi cập nhật','err');}
+}
+
+// DETAIL POPUP
+function showDetail(id){
+  const t=todayTasks.find(x=>x['ID']===id)||allTasks.find(x=>x['ID']===id);
+  if(!t)return;
+  document.getElementById('puTitle').textContent=t['Task']||'—';
+  document.getElementById('puAssignee').textContent=t['Assignee Name']||t['Assignee']||'—';
+  const timeStr=t['Giờ bắt đầu']?(t['Giờ bắt đầu']+(t['Giờ kết thúc']?' – '+t['Giờ kết thúc']:'')):'Không có giờ cụ thể';
+  document.getElementById('puTime').textContent=timeStr;
+  document.getElementById('puPri').textContent=priLabel[t['Priority']||'medium'];
+  document.getElementById('puBy').textContent=t['Created Name']||t['Created by']||'—';
+  const desc=t['Mô tả']||'';
+  document.getElementById('puDescRow').style.display=desc?'flex':'none';
+  document.getElementById('puDesc').textContent=desc;
+  document.getElementById('taskPopup').classList.add('on');
+}
+function closePopup(){document.getElementById('taskPopup').classList.remove('on');}
+
+// TEAM CALENDAR
+async function loadTeamCal(){
+  document.getElementById('calWrap').innerHTML='<div class="loading">⏳ Đang tải...</div>';
+  const weekDates=getWeekDates(curWeekOffset);
+  updateWeekLabel(weekDates);
+  try{
+    // Fetch tất cả tasks trong tuần
+    const promises=weekDates.map(d=>
+      fetch(`${SHEETS}?type=tasks&date=${fmtDateKey(d)}`).then(r=>r.json())
+    );
+    const results=await Promise.all(promises);
+    allTasks=results.flatMap((r,i)=>(r.data||[]).map(t=>({...t,_date:weekDates[i]})));
+    renderCalendar(weekDates,allTasks,CU.role==='admin');
+  }catch(e){
+    document.getElementById('calWrap').innerHTML='<div class="loading">❌ Không tải được dữ liệu.</div>';
+  }
+}
+
+function getWeekDates(offset=0){
+  const now=new Date();
+  const day=now.getDay();
+  const mon=new Date(now);
+  mon.setDate(now.getDate()-((day+6)%7)+offset*7);
+  return Array.from({length:5},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
+}
+
+function updateWeekLabel(dates){
+  const s=fmtDateShort(dates[0]);const e=fmtDateShort(dates[4]);
+  document.getElementById('wkLabel').textContent=`${s} – ${e}`;
+}
+
+function changeWeek(n){curWeekOffset+=n;loadTeamCal();}
+function goThisWeek(){curWeekOffset=0;loadTeamCal();}
+
+function renderCalendar(dates,tasks,isAdmin){
+  const days=['T2','T3','T4','T5','T6'];
+  const members=isAdmin?Object.entries(USERS):[[CU.username,USERS[CU.username]]];
+  const colW=isAdmin?`140px repeat(5,1fr)`:`140px repeat(5,1fr)`;
+  let html=`<div class="cal-wrap">
+    <div class="cal-head" style="grid-template-columns:${colW}">
+      <div class="cal-head-cell">Thành viên</div>
+      ${dates.map((d,i)=>{
+        const isToday=fmtDateKey(d)===fmtDateKey(new Date());
+        return `<div class="cal-head-cell" style="${isToday?'color:var(--p);background:var(--soft)':''}">${days[i]}<br><span style="font-size:.85em;opacity:.7">${fmtDateShort(d)}</span></div>`;
+      }).join('')}
+    </div>`;
+  members.forEach(([uname,udata])=>{
+    if(!udata)return;
+    html+=`<div class="cal-row" style="grid-template-columns:${colW}">
+      <div class="cal-member">
+        <div class="cal-avatar">${initials(udata.name)}</div>
+        <span style="font-size:.78rem">${udata.name.split(' ').slice(-2).join(' ')}</span>
+      </div>
+      ${dates.map(d=>{
+        const dk=fmtDateKey(d);
+        const dayTasks=tasks.filter(t=>t['Assignee']===uname&&fmtDateKey(t._date)===dk);
+        return `<div class="cal-cell">
+          ${dayTasks.slice(0,3).map(t=>`
+            <div class="cal-task-mini ${miniCls[t['Priority']||'medium']}" onclick="showDetailFromAll('${t['ID']}')" title="${t['Task']||''}">
+              ${t['Giờ bắt đầu']?t['Giờ bắt đầu']+' ':''} ${t['Task']||'—'}
+            </div>`).join('')}
+          ${dayTasks.length>3?`<div style="font-size:.65rem;color:var(--slate);padding:.1rem .35rem">+${dayTasks.length-3} task</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+  html+='</div>';
+  document.getElementById('calWrap').innerHTML=html;
+}
+
+function showDetailFromAll(id){
+  const t=allTasks.find(x=>x['ID']===id);
+  if(!t)return;
+  document.getElementById('puTitle').textContent=t['Task']||'—';
+  document.getElementById('puAssignee').textContent=t['Assignee Name']||'—';
+  const timeStr=t['Giờ bắt đầu']?(t['Giờ bắt đầu']+(t['Giờ kết thúc']?' – '+t['Giờ kết thúc']:'')):'Không có giờ';
+  document.getElementById('puTime').textContent=timeStr;
+  document.getElementById('puPri').textContent=priLabel[t['Priority']||'medium'];
+  document.getElementById('puBy').textContent=t['Created Name']||'—';
+  const desc=t['Mô tả']||'';
+  document.getElementById('puDescRow').style.display=desc?'flex':'none';
+  document.getElementById('puDesc').textContent=desc;
+  document.getElementById('taskPopup').classList.add('on');
+}
+
+// CREATE TASK
+function initForm(){
+  // Assignee dropdown
+  const sel=document.getElementById('fAssignee');
+  sel.innerHTML=Object.entries(USERS).map(([k,v])=>`<option value="${k}" ${k===CU.username?'selected':''}>${v.name}</option>`).join('');
+  // Default date = today
+  document.getElementById('fDate').value=fmtDateKey(new Date());
+}
+
+async function createTask(){
+  const task=document.getElementById('fTask').value.trim();
+  const assignee=document.getElementById('fAssignee').value;
+  const date=document.getElementById('fDate').value;
+  if(!task){showToast('Vui lòng nhập tên task','err');return;}
+  if(!date){showToast('Vui lòng chọn ngày','err');return;}
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true;btn.textContent='Đang lưu...';
+  const payload={
+    type:'task',
+    task,
+    desc:document.getElementById('fDesc').value.trim(),
+    assignee,
+    assigneeName:USERS[assignee]?.name||assignee,
+    date,
+    timeStart:document.getElementById('fStart').value,
+    timeEnd:document.getElementById('fEnd').value,
+    priority:document.getElementById('fPri').value,
+    createdBy:CU.username,
+    createdName:CU.name,
+  };
+  try{
+    const r=await fetch(SHEETS,{method:'POST',body:JSON.stringify(payload)});
+    const j=await r.json();
+    if(j.status==='ok'){
+      document.getElementById('formSuccess').style.display='block';
+      document.getElementById('fTask').value='';
+      document.getElementById('fDesc').value='';
+      showToast('✅ Task đã được tạo!');
+      setTimeout(()=>{
+        document.getElementById('formSuccess').style.display='none';
+        switchTab('myday',document.querySelectorAll('.nav-tab')[0]);
+      },2000);
+    }else throw new Error(j.message);
+  }catch(e){
+    showToast('Lỗi tạo task — thử lại','err');
+  }finally{
+    btn.disabled=false;btn.textContent='Tạo task →';
+  }
+}
+
+// INIT
+window.addEventListener('DOMContentLoaded',()=>{
+  updateDateDisplay();
+  loadMyDay();
+  initForm();
+});
+</script>
+</body>
+</html>
