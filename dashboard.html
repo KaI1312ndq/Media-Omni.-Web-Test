@@ -284,7 +284,14 @@ function showMyScores(){
   sec.scrollIntoView({behavior:'smooth'});
   renderScores(currentUser.username);
 }
-
+function fmtDate(val){
+  if(!val||val==='—') return '—';
+  try{
+    const d=new Date(val);
+    if(isNaN(d)) return val;
+    return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'});
+  }catch(e){return val;}
+}
 async function renderScores(filterUser){
   const body=document.getElementById('scoresBody');
   body.innerHTML='<div class="no-scores">⏳ Đang tải dữ liệu từ Google Sheets...</div>';
@@ -303,7 +310,7 @@ async function renderScores(filterUser){
         <span class="st-type">${r['Loại quiz']||'—'}</span>
         <span>${r['Điểm']||0}/${r['Tổng câu']||0}</span>
         <span><span class="score-pill ${cls}">${pct}%</span></span>
-        <span style="color:var(--slate);font-size:.8rem">${r['Ngày làm']||'—'}</span>
+        <span style="color:var(--slate);font-size:.8rem">${fmtDate(r['Ngày làm'])}</span>
       </div>`;
     }).join('');
   }catch(e){
