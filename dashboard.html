@@ -289,7 +289,7 @@ async function renderScores(filterUser){
   const body=document.getElementById('scoresBody');
   body.innerHTML='<div class="no-scores">⏳ Đang tải dữ liệu từ Google Sheets...</div>';
   try{
-    const res=await fetch(SHEETS);
+    const res=await fetch(SHEETS+'?type=quiz');
     const json=await res.json();
     let rows=json.data||[];
     if(filterUser) rows=rows.filter(r=>r['Username']===filterUser);
