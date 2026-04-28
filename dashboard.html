@@ -114,7 +114,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--pale-sky);color
 .sp-mid{background:rgba(245,158,11,.1);color:var(--warning)}
 .sp-low{background:rgba(239,68,68,.1);color:var(--error)}
 .no-scores{padding:3rem;text-align:center;color:var(--slate);font-size:.9rem}
-
+.st-name{font-weight:600;color:var(--navy)}
+.st-type{font-size:.8rem;color:var(--slate)}
 @media(max-width:768px){
   .dash-nav-inner{padding:0 16px}
   .dash-content{padding:1.5rem 16px}
@@ -295,55 +296,45 @@ function showMyScores(){
   sec.scrollIntoView({behavior:'smooth'});
   renderScores(currentUser.username);
 }
-
-function renderScores(filterUser=null){
-  const topics=['tiktok','shopee','meta','google','leadership','softskills','sop','onboarding'];
-  const topicNames={tiktok:'TikTok Ads',shopee:'Shopee Ads',meta:'Meta Ads',google:'Google Ads',leadership:'Leadership',softskills:'Soft Skills',sop:'SOP & Process',onboarding:'Onboarding'};
-  const usernames=filterUser?[filterUser]:Object.keys(USERS).filter(u=>u!=='upbase');
-  let rows=[];
-  usernames.forEach(u=>{
-    topics.forEach(t=>{
-      const key=`quiz_${u}_${t}`;
-      const raw=localStorage.getItem(key);
-      if(raw){
-        try{
-          const d=JSON.parse(raw);
-          const pct=d.pct||Math.round(d.score/d.total*100);
-          rows.push({name:USERS[u]?USERS[u].name:u,topic:topicNames[t]||t,score:`${d.score}/${d.total}`,pct,date:d.date||'—'});
-        }catch(e){}
-      }
-    });
-  });
+async function renderScores(filterUser=null){
   const body=document.getElementById('scoresBody');
-  if(!rows.length){
-    body.innerHTML='<div class="no-scores">Chưa có kết quả quiz nào được lưu.</div>';
-    return;
+  const header=document.getElementById('scoresTableHead');
+  body.innerHTML='<div class="no-scores">⏳ Đang tải dữ liệu...</div>';
+
+  try{
+    const SHEETS='https://script.google.com/macros/s/AKfycbz88wmFm7dcP0rjsyaCkLNrxqe_2WM0tWcFljTm8ymEophSWhZ-HWTVpL1oFuUEWUv-/exec';
+    const res=await fetch(SHEETS);
+    const json=await res.json();
+    let rows=json.data||[];
+
+    // Filter
+    if(filterUser) rows=rows.filter(r=>r['Username']===filterUser);
+
+    if(!rows.length){
+      body.innerHTML='<div class="no-scores">Chưa có kết quả nào.</div>';
+      return;
+    }
+
+    // Sort: mới nhất lên đầu
+    rows.reverse();
+
+    body.innerHTML=rows.map(r=>{
+      const pct=parseInt(r['%'])||0;
+      const cls=pct>=80?'sp-high':pct>=50?'sp-mid':'sp-low';
+      return `<div class="st-row">
+        <span class="st-name">${r['Họ tên']||r['Username']||'—'}</span>
+        <span class="st-type">${r['Loại quiz']||'—'}</span>
+        <span>${r['Điểm']||0}/${r['Tổng câu']||0}</span>
+        <span><span class="score-pill ${cls}">${pct}%</span></span>
+        <span style="color:var(--slate);font-size:.8rem">${r['Ngày làm']||'—'}</span>
+      </div>`;
+    }).join('');
+
+  }catch(e){
+    body.innerHTML='<div class="no-scores">❌ Không tải được dữ liệu. Kiểm tra kết nối.</div>';
   }
-  body.innerHTML=rows.map(r=>{
-    const cls=r.pct>=80?'sp-high':r.pct>=50?'sp-mid':'sp-low';
-    return `<div class="st-row">
-      <span>${r.name}</span>
-      <span>${r.topic}</span>
-      <span>${r.score}</span>
-      <span><span class="score-pill ${cls}">${r.pct}%</span></span>
-      <span>${r.date}</span>
-    </div>`;
-  }).join('');
 }
 
 function clearAllScores(){
-  if(!confirm('Xóa toàn bộ dữ liệu quiz trên máy này?')) return;
-  Object.keys(localStorage).filter(k=>k.startsWith('quiz_')).forEach(k=>localStorage.removeItem(k));
-  renderScores();
+  alert('Tính năng xóa dữ liệu cần thực hiện trực tiếp trên Google Sheets.');
 }
-
-// Auto-login from session
-window.addEventListener('DOMContentLoaded',()=>{
-  const saved=sessionStorage.getItem('mo_user');
-  if(saved){
-    try{currentUser=JSON.parse(saved);showDash();}catch(e){}
-  }
-});
-</script>
-</body>
-</html>
