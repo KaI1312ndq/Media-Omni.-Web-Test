@@ -428,9 +428,13 @@ async function loadMyDay(){
   document.getElementById('tlBody').innerHTML='<div class="loading">⏳ Đang tải...</div>';
   const dateKey=fmtDateKey(curDate);
   try{
-    const r=await fetch(`${SHEETS}?type=tasks&date=${dateKey}&assignee=${CU.username}`);
+    const r=await fetch(`${SHEETS}?type=tasks&assignee=${CU.username}`);
     const j=await r.json();
-    todayTasks=j.data||[];
+    todayTasks=(j.data||[]).filter(t=>{
+  if(!t['Ngày']) return false;
+  const d=new Date(t['Ngày']);
+  return fmtDateKey(d)===fmtDateKey(curDate);
+});
     renderTimeline(todayTasks);
     renderSidebar(todayTasks);
   }catch(e){
