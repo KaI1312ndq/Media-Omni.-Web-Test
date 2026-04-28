@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Hub — Media Omni</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232563EB'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='18' font-weight='800' fill='white' font-family='Arial'>M</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;--primary-bright:#3B82F6;--soft-blue:#DBEAFE;--pale-sky:#EFF6FF;
+  --navy:#0F172A;--slate:#64748B;--border:#E2EAFF;--white:#FFFFFF;
+  --accent:#FF5A2A;--success:#10B981;--error:#EF4444;--warning:#F59E0B;
+  --shadow-sm:0 2px 8px rgba(15,23,42,0.06);--shadow-md:0 4px 24px rgba(15,23,42,0.08);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:24px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--pale-sky);color:var(--navy);min-height:100vh}
+
+/* LOGIN PAGE */
+#loginPage{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--pale-sky) 0%,var(--soft-blue) 100%);
+  padding:1rem;
+}
+.login-box{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-xl);
+  padding:2.5rem;width:100%;max-width:420px;box-shadow:var(--shadow-md);
+}
+.login-header{text-align:center;margin-bottom:2rem}
+.login-logo{font-size:1.25rem;font-weight:800;color:var(--navy)}
+.login-logo span{color:var(--primary)}
+.login-sub{font-size:.85rem;color:var(--slate);margin-top:.35rem}
+.form-field{margin-bottom:1.25rem}
+.form-field label{display:block;font-size:.78rem;font-weight:700;color:var(--slate);margin-bottom:.5rem;letter-spacing:.04em;text-transform:uppercase}
+.form-field input{
+  width:100%;padding:.875rem 1rem;background:var(--pale-sky);
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  color:var(--navy);font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;
+  transition:border-color .2s,background .2s;outline:none;
+}
+.form-field input:focus{border-color:var(--primary);background:var(--white)}
+.login-btn{
+  width:100%;padding:.875rem;background:var(--primary);color:#fff;border:none;
+  border-radius:var(--radius-sm);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700;font-size:.95rem;transition:background .2s;
+}
+.login-btn:hover{background:var(--primary-bright)}
+.login-error{color:var(--error);font-size:.8rem;text-align:center;margin-top:.75rem;display:none}
+.login-back{display:block;text-align:center;margin-top:1.25rem;font-size:.85rem;color:var(--slate);text-decoration:none}
+.login-back:hover{color:var(--primary)}
+
+/* DASHBOARD */
+#dashPage{display:none;min-height:100vh}
+.dash-nav{
+  background:var(--white);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm);
+}
+.dash-nav-inner{
+  max-width:1200px;margin:0 auto;padding:0 24px;
+  height:64px;display:flex;align-items:center;justify-content:space-between;
+}
+.dash-logo{font-size:.95rem;font-weight:800;color:var(--navy);text-decoration:none}
+.dash-logo span{color:var(--primary)}
+.dash-logo-sub{color:rgba(100,116,139,.5);font-weight:400;font-size:.8rem;margin-left:.35rem}
+.dash-right{display:flex;align-items:center;gap:.75rem}
+.role-badge{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px}
+.rb-admin{background:rgba(255,90,42,.1);color:var(--accent)}
+.rb-member{background:var(--soft-blue);color:var(--primary)}
+.rb-upbase{background:rgba(16,185,129,.1);color:var(--success)}
+.dash-user-name{font-size:.85rem;font-weight:600;color:var(--slate)}
+.dash-logout{background:none;border:1px solid var(--border);color:var(--slate);cursor:pointer;padding:.4rem .875rem;border-radius:var(--radius-sm);font-size:.8rem;font-family:'Plus Jakarta Sans',sans-serif;transition:border-color .2s,color .2s}
+.dash-logout:hover{border-color:var(--error);color:var(--error)}
+.dash-home{font-size:.8rem;color:var(--primary);text-decoration:none;font-weight:600}
+.dash-home:hover{text-decoration:underline}
+
+/* DASHBOARD CONTENT */
+.dash-content{max-width:1200px;margin:0 auto;padding:2.5rem 24px}
+.dash-welcome-block{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between}
+.dwb-left h1{font-size:1.5rem;font-weight:800;margin-bottom:.35rem}
+.dwb-left p{font-size:.9rem;color:var(--slate)}
+.dwb-right{font-size:2.5rem}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+.dash-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:1.75rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.dash-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:rgba(37,99,235,.2)}
+.dash-card.disabled{cursor:default;opacity:.65}
+.dash-card.disabled:hover{transform:none;box-shadow:none;border-color:var(--border)}
+.dc-icon{font-size:1.75rem;margin-bottom:1rem}
+.dc-title{font-size:1rem;font-weight:700;margin-bottom:.35rem}
+.dc-desc{font-size:.825rem;color:var(--slate);line-height:1.6;margin-bottom:.875rem}
+.dc-badge{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px}
+.dcb-available{background:rgba(16,185,129,.1);color:var(--success)}
+.dcb-soon{background:rgba(245,158,11,.1);color:var(--warning)}
+.dcb-admin{background:rgba(255,90,42,.1);color:var(--accent)}
+
+/* SCORES TABLE (admin) */
+#scoresSection{display:none;margin-top:2rem}
+.scores-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.scores-header h2{font-size:1.25rem;font-weight:700}
+.scores-clear{background:none;border:1px solid var(--error);color:var(--error);cursor:pointer;padding:.4rem .875rem;border-radius:var(--radius-sm);font-size:.8rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .2s}
+.scores-clear:hover{background:rgba(239,68,68,.08)}
+.scores-table{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.st-head{display:grid;grid-template-columns:2fr 2fr 2fr 1fr 1.5fr;gap:1rem;padding:1rem 1.5rem;background:var(--pale-sky);border-bottom:1px solid var(--border)}
+.st-head span{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate)}
+.st-row{display:grid;grid-template-columns:2fr 2fr 2fr 1fr 1.5fr;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border);align-items:center;transition:background .2s}
+.st-row:last-child{border-bottom:none}
+.st-row:hover{background:var(--pale-sky)}
+.st-row span{font-size:.875rem}
+.score-pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:700}
+.sp-high{background:rgba(16,185,129,.1);color:var(--success)}
+.sp-mid{background:rgba(245,158,11,.1);color:var(--warning)}
+.sp-low{background:rgba(239,68,68,.1);color:var(--error)}
+.no-scores{padding:3rem;text-align:center;color:var(--slate);font-size:.9rem}
+
+@media(max-width:768px){
+  .dash-nav-inner{padding:0 16px}
+  .dash-content{padding:1.5rem 16px}
+  .dash-welcome-block{flex-direction:column;gap:1rem;text-align:center}
+  .dash-grid{grid-template-columns:1fr}
+  .st-head,.st-row{grid-template-columns:1fr 1fr;font-size:.75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="login-header">
+      <div class="login-logo">Media<span>Omni</span></div>
+      <div class="login-sub">Đăng nhập để truy cập Team Hub</div>
+    </div>
+    <div class="form-field">
+      <label>Username</label>
+      <input type="text" id="lu" placeholder="username" autocomplete="off">
+    </div>
+    <div class="form-field">
+      <label>Password</label>
+      <input type="password" id="lp" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Đăng nhập →</button>
+    <div class="login-error" id="loginError">Sai username hoặc password.</div>
+    <a href="index.html" class="login-back">← Về trang chủ</a>
+  </div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="dashPage">
+  <nav class="dash-nav">
+    <div class="dash-nav-inner">
+      <a href="index.html" class="dash-logo">Media<span>Omni</span><span class="dash-logo-sub">Team Hub</span></a>
+      <div class="dash-right">
+        <span class="role-badge" id="roleBadge"></span>
+        <span class="dash-user-name" id="userName"></span>
+        <a href="index.html" class="dash-home">🏠 Trang chủ</a>
+        <button class="dash-logout" onclick="doLogout()">Đăng xuất</button>
+      </div>
+    </div>
+  </nav>
+  <div class="dash-content">
+    <div class="dash-welcome-block">
+      <div class="dwb-left">
+        <h1 id="welcomeTitle">Xin chào 👋</h1>
+        <p id="welcomeSub"></p>
+      </div>
+      <div class="dwb-right">🚀</div>
+    </div>
+    <div class="dash-grid" id="dashGrid"></div>
+    <div id="scoresSection">
+      <div class="scores-header">
+        <h2>📊 Bảng điểm Quiz Team</h2>
+        <button class="scores-clear" onclick="clearAllScores()">Xóa toàn bộ dữ liệu quiz</button>
+      </div>
+      <div class="scores-table">
+        <div class="st-head">
+          <span>Thành viên</span><span>Chủ đề</span><span>Điểm</span><span>%</span><span>Ngày làm</span>
+        </div>
+        <div id="scoresBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const USERS={
+  'quangnd':  {pass:'omni2026lead',role:'admin', name:'Nguyễn Đức Quảng'},
+  'linhntkh': {pass:'omni2026',role:'member',name:'Nguyễn Trần Khánh Linh'},
+  'duychk':   {pass:'omni2026',role:'member',name:'Chu Khánh Duy'},
+  'ductanh':  {pass:'omni2026',role:'member',name:'Thiều Anh Đức'},
+  'linhdkh':  {pass:'omni2026',role:'member',name:'Đoàn Khánh Linh'},
+  'thaodph':  {pass:'omni2026',role:'member',name:'Đỗ Phương Thảo'},
+  'hangdth':  {pass:'omni2026',role:'member',name:'Đỗ Thị Hằng'},
+  'trungdhu': {pass:'omni2026',role:'member',name:'Đặng Hữu Trung'},
+  'anhpq':    {pass:'omni2026',role:'member',name:'Phạm Quyền Anh'},
+  'khanhnm':  {pass:'omni2026',role:'member',name:'Nguyễn Minh Khánh'},
+  'ngochb':   {pass:'omni2026',role:'member',name:'Hoàng Bảo Ngọc'},
+  'phuongnm': {pass:'omni2026',role:'member',name:'Nguyễn Mai Phương'},
+  'upbase':   {pass:'upbase2026',role:'upbase',name:'UpBase Staff'},
+};
+
+const DASH_CFG={
+  admin:{
+    badge:'Admin / Lead',badgeClass:'rb-admin',
+    sub:'Bạn có quyền truy cập toàn bộ hệ thống — quiz, kết quả team, quản lý tài khoản.',
+    cards:[
+      {icon:'📝',title:'Quiz Hub',desc:'Làm bài kiểm tra theo chủ đề — Dạng 1 & Dạng 2.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
+      {icon:'📊',title:'Bảng điểm Team',desc:'Xem điểm quiz của tất cả thành viên.',badge:'dcb-available',label:'Xem ngay',action:'showScores'},
+      {icon:'👥',title:'Quản lý thành viên',desc:'Xem danh sách và phân quyền tài khoản.',badge:'dcb-soon',label:'Phase 3'},
+      {icon:'📚',title:'SOP & Resources',desc:'Tài liệu, template, checklist nội bộ.',badge:'dcb-soon',label:'Phase 4'},
+      {icon:'✏️',title:'Quản lý Quiz',desc:'Thêm, sửa câu hỏi cho từng chủ đề.',badge:'dcb-soon',label:'Phase 3'},
+      {icon:'📈',title:'Analytics',desc:'Thống kê performance quiz toàn team.',badge:'dcb-soon',label:'Phase 3'},
+    ]
+  },
+  member:{
+    badge:'Member',badgeClass:'rb-member',
+    sub:'Chào mừng bạn đến Team Hub — làm bài quiz, xem kết quả và truy cập tài nguyên nội bộ.',
+    cards:[
+      {icon:'📝',title:'Quiz Hub',desc:'Làm bài kiểm tra kiến thức theo chủ đề.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
+      {icon:'📊',title:'Kết quả của tôi',desc:'Xem lịch sử và điểm các bài đã làm.',badge:'dcb-available',label:'Xem',action:'showMyScores'},
+      {icon:'📚',title:'SOP & Resources',desc:'Tài liệu, template, checklist nội bộ.',badge:'dcb-soon',label:'Phase 4'},
+      {icon:'🎯',title:'OKR & Mục tiêu',desc:'Xem OKR team và tiến độ cá nhân.',badge:'dcb-soon',label:'Phase 4'},
+    ]
+  },
+  upbase:{
+    badge:'UpBase Staff',badgeClass:'rb-upbase',
+    sub:'Chào mừng bạn — bạn có thể thử quiz kiến thức marketing và xem năng lực team.',
+    cards:[
+      {icon:'📝',title:'Quiz Kiến thức',desc:'Thử sức với bài kiểm tra performance marketing.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
+      {icon:'🏠',title:'Xem Trang chủ',desc:'Tổng quan năng lực và kết quả của Media Omni.',badge:'dcb-available',label:'Xem',action:'goHome'},
+    ]
+  }
+};
+
+let currentUser=null;
+
+function doLogin(){
+  const u=document.getElementById('lu').value.trim().toLowerCase();
+  const p=document.getElementById('lp').value;
+  const user=USERS[u];
+  if(user&&user.pass===p){
+    currentUser={username:u,...user};
+    sessionStorage.setItem('mo_user',JSON.stringify(currentUser));
+    showDash();
+  } else {
+    document.getElementById('loginError').style.display='block';
+  }
+}
+
+function showDash(){
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('dashPage').style.display='block';
+  const cfg=DASH_CFG[currentUser.role];
+  const firstName=currentUser.name.split(' ').pop();
+  document.getElementById('roleBadge').textContent=cfg.badge;
+  document.getElementById('roleBadge').className='role-badge '+cfg.badgeClass;
+  document.getElementById('userName').textContent=currentUser.name;
+  document.getElementById('welcomeTitle').textContent=`Xin chào, ${firstName} 👋`;
+  document.getElementById('welcomeSub').textContent=cfg.sub;
+  document.getElementById('dashGrid').innerHTML=cfg.cards.map(c=>`
+    <div class="dash-card ${c.action?'':'disabled'}" onclick="${c.action?c.action+'()':''}">
+      <div class="dc-icon">${c.icon}</div>
+      <div class="dc-title">${c.title}</div>
+      <div class="dc-desc">${c.desc}</div>
+      <span class="dc-badge ${c.badge}">${c.label}</span>
+    </div>
+  `).join('');
+}
+
+function doLogout(){
+  sessionStorage.removeItem('mo_user');
+  currentUser=null;
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('dashPage').style.display='none';
+  document.getElementById('lu').value='';
+  document.getElementById('lp').value='';
+  document.getElementById('scoresSection').style.display='none';
+}
+
+function goQuiz(){ window.location.href='quiz.html'; }
+function goHome(){ window.location.href='index.html'; }
+
+function showScores(){
+  const sec=document.getElementById('scoresSection');
+  sec.style.display='block';
+  sec.scrollIntoView({behavior:'smooth'});
+  renderScores();
+}
+
+function showMyScores(){
+  const sec=document.getElementById('scoresSection');
+  sec.style.display='block';
+  sec.scrollIntoView({behavior:'smooth'});
+  renderScores(currentUser.username);
+}
+
+function renderScores(filterUser=null){
+  const topics=['tiktok','shopee','meta','google','leadership','softskills','sop','onboarding'];
+  const topicNames={tiktok:'TikTok Ads',shopee:'Shopee Ads',meta:'Meta Ads',google:'Google Ads',leadership:'Leadership',softskills:'Soft Skills',sop:'SOP & Process',onboarding:'Onboarding'};
+  const usernames=filterUser?[filterUser]:Object.keys(USERS).filter(u=>u!=='upbase');
+  let rows=[];
+  usernames.forEach(u=>{
+    topics.forEach(t=>{
+      const key=`quiz_${u}_${t}`;
+      const raw=localStorage.getItem(key);
+      if(raw){
+        try{
+          const d=JSON.parse(raw);
+          const pct=d.pct||Math.round(d.score/d.total*100);
+          rows.push({name:USERS[u]?USERS[u].name:u,topic:topicNames[t]||t,score:`${d.score}/${d.total}`,pct,date:d.date||'—'});
+        }catch(e){}
+      }
+    });
+  });
+  const body=document.getElementById('scoresBody');
+  if(!rows.length){
+    body.innerHTML='<div class="no-scores">Chưa có kết quả quiz nào được lưu.</div>';
+    return;
+  }
+  body.innerHTML=rows.map(r=>{
+    const cls=r.pct>=80?'sp-high':r.pct>=50?'sp-mid':'sp-low';
+    return `<div class="st-row">
+      <span>${r.name}</span>
+      <span>${r.topic}</span>
+      <span>${r.score}</span>
+      <span><span class="score-pill ${cls}">${r.pct}%</span></span>
+      <span>${r.date}</span>
+    </div>`;
+  }).join('');
+}
+
+function clearAllScores(){
+  if(!confirm('Xóa toàn bộ dữ liệu quiz trên máy này?')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('quiz_')).forEach(k=>localStorage.removeItem(k));
+  renderScores();
+}
+
+// Auto-login from session
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=sessionStorage.getItem('mo_user');
+  if(saved){
+    try{currentUser=JSON.parse(saved);showDash();}catch(e){}
+  }
+});
+</script>
+</body>
+</html>

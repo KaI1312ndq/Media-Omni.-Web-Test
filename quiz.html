@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Hub — Media Omni</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232563EB'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='18' font-weight='800' fill='white' font-family='Arial'>Q</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;--primary-bright:#3B82F6;--soft-blue:#DBEAFE;--pale-sky:#EFF6FF;
+  --navy:#0F172A;--slate:#64748B;--border:#E2EAFF;--white:#FFFFFF;
+  --accent:#FF5A2A;--success:#10B981;--error:#EF4444;--warning:#F59E0B;
+  --shadow-sm:0 2px 8px rgba(15,23,42,0.06);--shadow-md:0 4px 24px rgba(15,23,42,0.08);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--pale-sky);color:var(--navy);min-height:100vh}
+
+/* NAV */
+.quiz-nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm)}
+.qn-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.qn-logo{font-size:.95rem;font-weight:800;color:var(--navy);text-decoration:none}
+.qn-logo span{color:var(--primary)}
+.qn-right{display:flex;align-items:center;gap:1rem}
+.qn-user{font-size:.85rem;color:var(--slate);font-weight:600}
+.qn-back{font-size:.85rem;color:var(--primary);text-decoration:none;font-weight:600;padding:.4rem .875rem;border:1px solid var(--soft-blue);border-radius:var(--radius-sm);background:var(--pale-sky);transition:background .2s}
+.qn-back:hover{background:var(--soft-blue)}
+
+/* HUB PAGE */
+#hubPage{max-width:1200px;margin:0 auto;padding:2.5rem 24px}
+.hub-header{margin-bottom:2.5rem}
+.hub-breadcrumb{font-size:.8rem;color:var(--slate);margin-bottom:.75rem}
+.hub-breadcrumb a{color:var(--primary);text-decoration:none}
+.hub-title{font-size:1.75rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem}
+.hub-sub{font-size:.95rem;color:var(--slate)}
+.hub-types{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:3rem}
+.type-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:2rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.type-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:rgba(37,99,235,.25)}
+.tc-icon{font-size:2rem;margin-bottom:1rem}
+.tc-title{font-size:1.05rem;font-weight:700;margin-bottom:.35rem}
+.tc-desc{font-size:.85rem;color:var(--slate);line-height:1.6;margin-bottom:1rem}
+.tc-badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.25rem .65rem;border-radius:999px}
+.tcb-green{background:rgba(16,185,129,.1);color:var(--success)}
+.tcb-blue{background:var(--soft-blue);color:var(--primary)}
+.tcb-gray{background:rgba(100,116,139,.1);color:var(--slate)}
+.topic-section h3{font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--slate);letter-spacing:.04em;text-transform:uppercase}
+.topic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.topic-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);
+  padding:1.25rem;cursor:pointer;transition:border-color .2s,background .2s;
+  display:flex;align-items:center;gap:.875rem;
+}
+.topic-card:hover{border-color:var(--primary);background:var(--pale-sky)}
+.topic-card.locked{cursor:default;opacity:.6}
+.topic-card.locked:hover{border-color:var(--border);background:var(--white)}
+.tc-emoji{font-size:1.25rem;width:36px;flex-shrink:0}
+.tc-name{font-size:.875rem;font-weight:700;color:var(--navy)}
+.tc-count{font-size:.72rem;color:var(--slate);margin-top:.2rem}
+.tc-lock{margin-left:auto;font-size:.8rem;color:var(--slate)}
+
+/* QUIZ PAGE */
+#quizPage{display:none;max-width:1200px;margin:0 auto;padding:1.5rem 24px}
+.quiz-breadcrumb{font-size:.8rem;color:var(--slate);margin-bottom:1rem}
+.quiz-breadcrumb a{color:var(--primary);text-decoration:none}
+.quiz-meta{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.qm-item{display:flex;align-items:center;gap:.5rem;font-size:.85rem}
+.qm-label{color:var(--slate);font-weight:500}
+.qm-val{font-weight:700;color:var(--navy)}
+.progress-bar{flex:1;min-width:120px;height:8px;background:var(--pale-sky);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),#6366f1);border-radius:4px;transition:width .4s ease}
+.timer-val{font-weight:800;color:var(--primary)}
+.timer-val.warn{color:var(--error);animation:blink .5s infinite alternate}
+@keyframes blink{from{opacity:1}to{opacity:.4}}
+.diff-badge{font-size:.7rem;font-weight:700;padding:.25rem .65rem;border-radius:999px}
+.diff-medium{background:rgba(245,158,11,.1);color:var(--warning)}
+
+/* 3-PANEL LAYOUT */
+.quiz-3panel{display:grid;grid-template-columns:200px 1fr 220px;gap:1.25rem;align-items:start}
+.panel-left{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;position:sticky;top:80px}
+.pl-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);margin-bottom:.875rem}
+.q-nav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1.25rem}
+.q-nav-btn{
+  width:36px;height:36px;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+  background:var(--pale-sky);cursor:pointer;font-size:.8rem;font-weight:700;color:var(--slate);
+  display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.q-nav-btn:hover{border-color:var(--primary);color:var(--primary)}
+.q-nav-btn.current{border-color:var(--primary);background:var(--primary);color:#fff}
+.q-nav-btn.correct{border-color:var(--success);background:rgba(16,185,129,.1);color:var(--success)}
+.q-nav-btn.wrong{border-color:var(--error);background:rgba(239,68,68,.1);color:var(--error)}
+.q-nav-btn.marked{border-color:var(--warning);background:rgba(245,158,11,.1);color:var(--warning)}
+.pl-topics{margin-top:1rem}
+.pl-topics .plt-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);margin-bottom:.6rem}
+.plt-chip{display:inline-block;font-size:.72rem;font-weight:600;padding:.25rem .6rem;border-radius:999px;margin:.2rem .2rem .2rem 0;background:var(--soft-blue);color:var(--primary)}
+
+/* CENTER PANEL */
+.panel-center{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem}
+.q-header{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--primary);margin-bottom:.75rem}
+.q-text{font-size:1.1rem;font-weight:600;line-height:1.6;margin-bottom:1.5rem;color:var(--navy)}
+.q-options{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.25rem}
+.q-opt{
+  display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;
+  border:1.5px solid var(--border);border-radius:var(--radius-md);
+  cursor:pointer;transition:all .15s;background:var(--white);
+}
+.q-opt:hover:not(.disabled){border-color:var(--primary);background:var(--pale-sky)}
+.q-opt.selected{border-color:var(--primary);background:var(--soft-blue)}
+.q-opt.correct{border-color:var(--success);background:rgba(16,185,129,.08)}
+.q-opt.wrong{border-color:var(--error);background:rgba(239,68,68,.08)}
+.q-opt.disabled{cursor:default}
+.opt-letter{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  background:var(--pale-sky);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:800;color:var(--slate);flex-shrink:0;transition:all .15s;
+}
+.q-opt.selected .opt-letter{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-opt.correct .opt-letter{background:var(--success);color:#fff;border-color:var(--success)}
+.q-opt.wrong .opt-letter{background:var(--error);color:#fff;border-color:var(--error)}
+.opt-text{font-size:.9rem;font-weight:500;color:var(--navy);flex:1}
+.q-explain{background:var(--soft-blue);border:1px solid rgba(37,99,235,.2);border-radius:var(--radius-md);padding:1rem 1.25rem;margin-bottom:1.25rem;display:none}
+.qe-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--primary);margin-bottom:.4rem}
+.qe-text{font-size:.875rem;color:var(--navy);line-height:1.7}
+.q-actions{display:flex;gap:.75rem;align-items:center}
+.btn-prev{background:none;border:1.5px solid var(--border);color:var(--slate);cursor:pointer;padding:.75rem 1.25rem;border-radius:var(--radius-sm);font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.875rem;transition:border-color .2s,color .2s}
+.btn-prev:hover{border-color:var(--primary);color:var(--primary)}
+.btn-mark{background:none;border:1.5px solid var(--warning);color:var(--warning);cursor:pointer;padding:.75rem 1.25rem;border-radius:var(--radius-sm);font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.875rem;transition:background .2s}
+.btn-mark:hover{background:rgba(245,158,11,.08)}
+.btn-next{background:var(--primary);color:#fff;border:none;cursor:pointer;padding:.75rem 1.5rem;border-radius:var(--radius-sm);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.875rem;transition:background .2s;margin-left:auto}
+.btn-next:hover{background:var(--primary-bright)}
+
+/* RIGHT PANEL */
+.panel-right{position:sticky;top:80px;display:flex;flex-direction:column;gap:1rem}
+.pr-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.pr-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);margin-bottom:.875rem}
+.score-ring{text-align:center;margin-bottom:.875rem}
+.ring-wrap{position:relative;display:inline-block}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:1.25rem;font-weight:800;color:var(--primary)}
+.ring-label{font-size:.65rem;color:var(--success);font-weight:700}
+.score-stats{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.ss-item{text-align:center;padding:.75rem .5rem;background:var(--pale-sky);border-radius:var(--radius-sm)}
+.ss-val{font-size:1.25rem;font-weight:800;color:var(--navy)}
+.ss-label{font-size:.65rem;color:var(--slate);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.rules-list{display:flex;flex-direction:column;gap:.5rem}
+.rule-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.78rem;color:var(--slate);line-height:1.5}
+.rule-icon{flex-shrink:0;margin-top:1px}
+.btn-submit{width:100%;padding:.875rem;background:var(--error);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.875rem;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:background .2s}
+.btn-submit:hover{background:#dc2626}
+
+/* RESULT PAGE */
+#resultPage{display:none;max-width:600px;margin:0 auto;padding:3rem 24px;text-align:center}
+.result-emoji{font-size:4rem;margin-bottom:1rem}
+.result-title{font-size:1.75rem;font-weight:800;margin-bottom:.5rem}
+.result-score-big{font-size:5rem;font-weight:800;background:linear-gradient(135deg,var(--primary),#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin:.75rem 0}
+.result-grade{font-size:1.05rem;font-weight:600;color:var(--slate);margin-bottom:.5rem}
+.result-topic{font-size:.9rem;color:var(--primary);font-weight:700;margin-bottom:2rem}
+.result-breakdown{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;text-align:left;max-height:280px;overflow-y:auto}
+.rb-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);margin-bottom:1rem}
+.rb-item{display:flex;align-items:center;gap:.875rem;padding:.625rem 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.rb-item:last-child{border:none}
+.rb-num{font-size:.75rem;font-weight:700;color:var(--slate);width:20px;flex-shrink:0}
+.rb-q{flex:1;color:var(--navy);line-height:1.4}
+.rb-pill{font-size:.7rem;font-weight:700;padding:.2rem .55rem;border-radius:999px;white-space:nowrap}
+.rbp-c{background:rgba(16,185,129,.1);color:var(--success)}
+.rbp-w{background:rgba(239,68,68,.1);color:var(--error)}
+.result-actions{display:flex;gap:.875rem;justify-content:center}
+.btn-retry{background:none;border:1.5px solid var(--border);color:var(--navy);padding:.875rem 1.5rem;border-radius:var(--radius-sm);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.9rem;transition:border-color .2s}
+.btn-retry:hover{border-color:var(--primary)}
+.btn-home{background:var(--primary);color:#fff;padding:.875rem 1.5rem;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.9rem;transition:background .2s}
+.btn-home:hover{background:var(--primary-bright)}
+
+@media(max-width:1024px){
+  .quiz-3panel{grid-template-columns:1fr;gap:1rem}
+  .panel-left,.panel-right{position:static}
+  .hub-types{grid-template-columns:1fr}
+  .topic-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  #quizPage,#hubPage,#resultPage{padding:1rem 16px}
+  .quiz-meta{gap:.75rem}
+  .result-score-big{font-size:4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="quiz-nav">
+  <div class="qn-inner">
+    <a href="index.html" class="qn-logo">Media<span>Omni</span></a>
+    <div class="qn-right">
+      <span class="qn-user" id="qnUser"></span>
+      <a href="dashboard.html" class="qn-back">← Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HUB PAGE -->
+<div id="hubPage">
+  <div class="hub-header">
+    <div class="hub-breadcrumb"><a href="index.html">🏠</a> › Quiz Hub</div>
+    <h1 class="hub-title">Quiz Hub</h1>
+    <p class="hub-sub">Chọn dạng bài và chủ đề để bắt đầu kiểm tra kiến thức.</p>
+  </div>
+  <div class="hub-types">
+    <div class="type-card" onclick="selectType('benchmark')">
+      <div class="tc-icon">⚡</div>
+      <div class="tc-title">Dạng 1 — Benchmark Ads Thị trường</div>
+      <div class="tc-desc">Kiểm tra benchmark thực chiến — số liệu thị trường, ROAS, CPC, CPM theo platform. Câu sai lặp lại đến khi thuộc hết.</div>
+      <span class="tc-badge tcb-green">Sẵn sàng</span>
+    </div>
+    <div class="type-card" onclick="selectType('chiso')">
+      <div class="tc-icon">📊</div>
+      <div class="tc-title">Dạng 2 — Chỉ số Ads</div>
+      <div class="tc-desc">18 chỉ số quan trọng — định nghĩa, công thức, yếu tố tác động. 30 câu trắc nghiệm 4 đáp án.</div>
+      <span class="tc-badge tcb-blue">Sẵn sàng</span>
+    </div>
+    <div class="type-card" style="opacity:.6;cursor:default" onclick="">
+      <div class="tc-icon">✍️</div>
+      <div class="tc-title">Dạng 3 — Tự luận chuyên sâu</div>
+      <div class="tc-desc">Câu hỏi mở, phân tích chuyên sâu — kết quả gửi về Admin để review.</div>
+      <span class="tc-badge tcb-gray">Phase 3</span>
+    </div>
+  </div>
+
+  <div class="topic-section" id="topicSection" style="display:none">
+    <h3 id="topicSectionTitle">Chọn chủ đề</h3>
+    <div class="topic-grid" id="topicGrid"></div>
+  </div>
+</div>
+
+<!-- QUIZ PAGE -->
+<div id="quizPage">
+  <div class="quiz-breadcrumb"><a href="#" onclick="backToHub()">🏠 Quiz Hub</a> › <span id="qbTopic"></span></div>
+  <div class="quiz-meta">
+    <div class="qm-item"><span class="qm-label">Câu</span><span class="qm-val" id="qmCur">1</span><span class="qm-label">/</span><span class="qm-val" id="qmTotal">10</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="qm-item">⏱️ <span class="timer-val" id="timerVal">15:00</span></div>
+    <span class="diff-badge diff-medium" id="diffBadge">Medium</span>
+  </div>
+  <div class="quiz-3panel">
+    <!-- LEFT -->
+    <div class="panel-left">
+      <div class="pl-title">Danh sách câu hỏi</div>
+      <div class="q-nav-grid" id="qNavGrid"></div>
+      <div class="pl-topics">
+        <div class="plt-title">Chủ đề liên quan</div>
+        <div id="topicTags"></div>
+      </div>
+    </div>
+    <!-- CENTER -->
+    <div class="panel-center">
+      <div class="q-header" id="qHeader">Câu hỏi 1</div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+      <div class="q-explain" id="qExplain">
+        <div class="qe-title">💡 Giải thích nhanh</div>
+        <div class="qe-text" id="qExplainText"></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn-prev" onclick="prevQ()">← Câu trước</button>
+        <button class="btn-mark" id="markBtn" onclick="markQ()">🔖 Đánh dấu</button>
+        <button class="btn-next" id="nextBtn" onclick="nextQ()">Câu tiếp theo →</button>
+      </div>
+    </div>
+    <!-- RIGHT -->
+    <div class="panel-right">
+      <div class="pr-card">
+        <div class="pr-title">Kết quả tạm thời</div>
+        <div class="score-ring">
+          <div class="ring-wrap">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#E2EAFF" stroke-width="8"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#2563EB" stroke-width="8"
+                stroke-dasharray="251.2" stroke-dashoffset="251.2" id="ringCircle"
+                stroke-linecap="round" style="transition:stroke-dashoffset .5s ease"/>
+            </svg>
+            <div class="ring-text">
+              <div class="ring-pct" id="ringPct">0%</div>
+              <div class="ring-label">Đúng</div>
+            </div>
+          </div>
+        </div>
+        <div class="score-stats">
+          <div class="ss-item"><div class="ss-val" id="ssCorrect">0</div><div class="ss-label">Đúng</div></div>
+          <div class="ss-item"><div class="ss-val" id="ssRemain" style="color:var(--slate)">10</div><div class="ss-label">Còn lại</div></div>
+        </div>
+      </div>
+      <div class="pr-card">
+        <div class="pr-title">Quy tắc</div>
+        <div class="rules-list">
+          <div class="rule-item"><span class="rule-icon">⏱️</span>Thời gian làm bài là 15 phút.</div>
+          <div class="rule-item"><span class="rule-icon">🔖</span>Bạn có thể đánh dấu để xem lại câu hỏi.</div>
+          <div class="rule-item"><span class="rule-icon">✅</span>Giải thích đáp án hiện ngay sau khi chọn.</div>
+        </div>
+      </div>
+      <button class="btn-submit" onclick="submitQuiz()">📤 Nộp bài</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT PAGE -->
+<div id="resultPage">
+  <div class="result-emoji" id="resultEmoji">🏆</div>
+  <h2 class="result-title">Kết quả bài thi</h2>
+  <div class="result-score-big" id="resultScore">8/10</div>
+  <div class="result-grade" id="resultGrade">Xuất sắc!</div>
+  <div class="result-topic" id="resultTopic"></div>
+  <div class="result-breakdown">
+    <div class="rb-title">Chi tiết từng câu</div>
+    <div id="breakdownList"></div>
+  </div>
+  <div class="result-actions">
+    <button class="btn-retry" onclick="retryQuiz()">🔄 Làm lại</button>
+    <button class="btn-home" onclick="backToHub()">← Chọn chủ đề khác</button>
+  </div>
+</div>
+
+<script>
+// ── AUTH CHECK ──
+const USERS={
+  'quangnd':{pass:'omni2026lead',role:'admin',name:'Nguyễn Đức Quảng'},
+  'linhntkh':{pass:'omni2026',role:'member',name:'Nguyễn Trần Khánh Linh'},
+  'duychk':{pass:'omni2026',role:'member',name:'Chu Khánh Duy'},
+  'ductanh':{pass:'omni2026',role:'member',name:'Thiều Anh Đức'},
+  'linhdkh':{pass:'omni2026',role:'member',name:'Đoàn Khánh Linh'},
+  'thaodph':{pass:'omni2026',role:'member',name:'Đỗ Phương Thảo'},
+  'hangdth':{pass:'omni2026',role:'member',name:'Đỗ Thị Hằng'},
+  'trungdhu':{pass:'omni2026',role:'member',name:'Đặng Hữu Trung'},
+  'anhpq':{pass:'omni2026',role:'member',name:'Phạm Quyền Anh'},
+  'khanhnm':{pass:'omni2026',role:'member',name:'Nguyễn Minh Khánh'},
+  'ngochb':{pass:'omni2026',role:'member',name:'Hoàng Bảo Ngọc'},
+  'phuongnm':{pass:'omni2026',role:'member',name:'Nguyễn Mai Phương'},
+  'upbase':{pass:'upbase2026',role:'upbase',name:'UpBase Staff'},
+};
+
+let currentUser=null;
+const saved=sessionStorage.getItem('mo_user');
+if(saved){try{currentUser=JSON.parse(saved);}catch(e){}}
+if(!currentUser){window.location.href='dashboard.html';}
+else{document.getElementById('qnUser').textContent=currentUser.name;}
+
+// ── DẠNG 2: CHỈ SỐ ADS — 30 CÂU ──
+const CHISO_QUESTIONS=[
+  // CHI PHÍ
+  {q:'Chi phí trong quảng cáo (Ad Spend) là gì?',opts:['Tổng doanh thu từ chiến dịch quảng cáo','Tổng số tiền đã chi để chạy quảng cáo trong một khoảng thời gian','Số tiền thu về sau khi trừ chi phí vận hành','Ngân sách tối đa được phê duyệt cho chiến dịch'],ans:1,explain:'Chi phí (Ad Spend) là tổng số tiền thực tế đã được chi để hiển thị quảng cáo. Đây là đầu vào cơ bản để tính các chỉ số như ROAS, CPC, CPM.',tags:['Chi phí','Cơ bản']},
+  // GMV
+  {q:'GMV (Gross Merchandise Value) trong TikTok Shop được tính như thế nào?',opts:['Doanh thu thực nhận sau khi trừ hoa hồng sàn và hoàn hàng','Tổng giá trị đơn hàng đặt thành công (kể cả chưa thanh toán và hoàn hàng)','Doanh thu thuần sau khi trừ chi phí vận chuyển','Số lượng đơn hàng nhân với giá bán trung bình'],ans:1,explain:'GMV = Tổng giá trị tất cả đơn hàng được tạo ra, bao gồm cả đơn hủy và hoàn hàng. NMV = GMV trừ đơn hủy, hoàn hàng — mới là doanh thu thực tế.',tags:['GMV','TikTok Shop']},
+  // ROAS
+  {q:'ROAS (Return on Ad Spend) được tính theo công thức nào?',opts:['ROAS = GMV × Chi phí','ROAS = Chi phí ÷ GMV','ROAS = GMV ÷ Chi phí','ROAS = (GMV - Chi phí) ÷ Chi phí'],ans:2,explain:'ROAS = GMV ÷ Chi phí. Ví dụ: chi 10 triệu, thu về 70 triệu GMV → ROAS = 7. Benchmark Media Omni: TikTok ~6, Shopee ~9.',tags:['ROAS','Công thức']},
+  {q:'ROAS = 5 có nghĩa là gì?',opts:['Cứ 5 đồng chi phí tạo ra 1 đồng doanh thu','Cứ 1 đồng chi phí tạo ra 5 đồng GMV','Tỷ lệ chuyển đổi đạt 5%','Doanh thu tăng 5% so với kỳ trước'],ans:1,explain:'ROAS = 5 nghĩa là mỗi 1 đồng bỏ ra để chạy quảng cáo thu về 5 đồng GMV. Không phải lợi nhuận vì chưa trừ giá vốn và các chi phí khác.',tags:['ROAS','Diễn giải']},
+  // IMPRESSION
+  {q:'Lượt hiển thị (Impression) là gì?',opts:['Số người thực sự nhìn thấy quảng cáo','Số lần quảng cáo được hiển thị trên màn hình (kể cả cùng 1 người thấy nhiều lần)','Số lần người dùng click vào quảng cáo','Số lần quảng cáo được phân phối nhưng không nhất thiết được xem'],ans:1,explain:'Impression là số lần quảng cáo xuất hiện. Một người có thể tạo ra nhiều impression. Khác với Reach là số người duy nhất thấy quảng cáo.',tags:['Impression','Cơ bản']},
+  // REACH
+  {q:'Điểm khác biệt chính giữa Reach và Impression là gì?',opts:['Reach tính lượt click, Impression tính lượt xem','Reach là số người duy nhất thấy quảng cáo, Impression là tổng số lần hiển thị','Reach chỉ đo trên mobile, Impression đo trên tất cả thiết bị','Reach là chỉ số trả phí, Impression là chỉ số organic'],ans:1,explain:'Reach = số người unique. Impression = tổng số lần hiển thị. Nếu Impression ÷ Reach > 1 thì Frequency > 1, tức 1 người thấy quảng cáo nhiều hơn 1 lần.',tags:['Reach','Impression']},
+  // FREQUENCY
+  {q:'Frequency (Tần suất) được tính bằng công thức nào?',opts:['Frequency = Reach ÷ Impression','Frequency = Impression ÷ Reach','Frequency = Click ÷ Impression','Frequency = Impression ÷ Click'],ans:1,explain:'Frequency = Impression ÷ Reach. Ví dụ: 100.000 impression / 50.000 reach = Frequency 2 (mỗi người thấy TB 2 lần). Frequency quá cao gây "ad fatigue".',tags:['Frequency','Công thức']},
+  {q:'Frequency cao ảnh hưởng đến hiệu quả quảng cáo như thế nào?',opts:['Luôn tốt vì tăng nhận diện thương hiệu','Có thể gây ad fatigue — CTR giảm, CPC tăng, người dùng chán quảng cáo','Không có ảnh hưởng đáng kể','Chỉ ảnh hưởng khi chạy campaign remarketing'],ans:1,explain:'Frequency cao (>3-5 trên Meta) thường gây ad fatigue: người dùng bắt đầu bỏ qua quảng cáo, CTR giảm, hệ thống phải tốn nhiều tiền hơn để cạnh tranh → CPC tăng.',tags:['Frequency','Tối ưu']},
+  // CPC
+  {q:'CPC (Cost Per Click) được tính theo công thức nào?',opts:['CPC = Số click ÷ Chi phí','CPC = Chi phí ÷ Số click','CPC = Impression ÷ Số click','CPC = Chi phí × Số click'],ans:1,explain:'CPC = Chi phí ÷ Số click. Ví dụ: chi 1 triệu, có 500 click → CPC = 2.000đ/click. CPC thấp = hiệu quả phân phối tốt hơn.',tags:['CPC','Công thức']},
+  {q:'Yếu tố nào dưới đây KHÔNG ảnh hưởng đến CPC?',opts:['Chất lượng và độ phù hợp của creative','Mức độ cạnh tranh trong auction','Tỷ lệ chuyển đổi sau click (CVR)','CTR của quảng cáo'],ans:2,explain:'CVR (tỷ lệ chuyển đổi sau click) xảy ra sau khi click đã được tính — không ảnh hưởng ngược lại CPC. CPC bị ảnh hưởng bởi: CTR, quality score, bidding competition, audience size.',tags:['CPC','Yếu tố tác động']},
+  // CPM
+  {q:'CPM (Cost Per Mille) là chi phí cho bao nhiêu lượt hiển thị?',opts:['10 lượt hiển thị','100 lượt hiển thị','1.000 lượt hiển thị','10.000 lượt hiển thị'],ans:2,explain:'CPM = Cost Per Mille = chi phí cho 1.000 lần hiển thị. Công thức: CPM = (Chi phí ÷ Impression) × 1.000. CPM thường dùng để đánh giá hiệu quả awareness campaign.',tags:['CPM','Cơ bản']},
+  {q:'Yếu tố nào làm CPM tăng cao trên Meta Ads?',opts:['Audience size quá lớn và ít cạnh tranh','Audience size quá nhỏ, mùa cao điểm (Tết, 11/11), và creative score thấp','CTR quá cao làm hệ thống charge thêm','Budget campaign quá nhỏ so với audience'],ans:1,explain:'CPM tăng khi: audience nhỏ (ít inventory, đấu thầu gay gắt), mùa cao điểm (nhiều nhà quảng cáo cạnh tranh), creative relevance score thấp. Audience rộng thường có CPM thấp hơn.',tags:['CPM','Yếu tố tác động']},
+  // CTR
+  {q:'CTR (Click-Through Rate) được tính theo công thức nào?',opts:['CTR = Click ÷ Reach × 100%','CTR = Click ÷ Impression × 100%','CTR = Impression ÷ Click × 100%','CTR = Conversion ÷ Click × 100%'],ans:1,explain:'CTR = Click ÷ Impression × 100%. Ví dụ: 500 click / 100.000 impression = 0.5% CTR. CTR cao = creative hấp dẫn, đúng audience.',tags:['CTR','Công thức']},
+  {q:'CTR (All) và CTR (Link Click) khác nhau ở điểm nào trên Meta Ads?',opts:['CTR (All) chỉ tính click vào link, CTR (Link Click) tính mọi tương tác','CTR (All) tính mọi click (like, share, xem ảnh...), CTR (Link Click) chỉ tính click vào destination URL','Hai chỉ số này giống nhau hoàn toàn','CTR (All) dùng cho video, CTR (Link Click) dùng cho static ads'],ans:1,explain:'CTR (All) = tổng mọi loại click. CTR (Link Click) = chỉ click vào landing page. Khi tối ưu conversion, dùng CTR (Link Click) để đánh giá intent thực sự của user.',tags:['CTR','Meta Ads']},
+  // GIỎ HÀNG
+  {q:'Tỷ lệ thêm vào giỏ hàng (Add to Cart Rate) được tính như thế nào?',opts:['Số lần thêm giỏ hàng ÷ Số đơn hàng × 100%','Số lần thêm giỏ hàng ÷ Số lượt xem trang sản phẩm × 100%','Số lần thêm giỏ hàng ÷ Số click × 100%','Số lần thêm giỏ hàng ÷ Số lượt hiển thị × 100%'],ans:1,explain:'Add to Cart Rate = Số lần Add to Cart ÷ Số lượt xem trang sản phẩm (Product Page View) × 100%. Chỉ số này phản ánh mức độ hấp dẫn của sản phẩm sau khi user đã xem.',tags:['Giỏ hàng','Funnel']},
+  // THANH TOÁN
+  {q:'Tỷ lệ bắt đầu thanh toán thấp (mặc dù Add to Cart cao) thường chỉ ra vấn đề gì?',opts:['Creative quảng cáo không hấp dẫn','Giá sản phẩm không cạnh tranh, phí ship cao, hoặc UX checkout phức tạp','Audience targeting sai','Budget campaign không đủ'],ans:1,explain:'Add to Cart cao nhưng Initiate Checkout thấp = bottleneck ở bước chuyển từ giỏ hàng sang checkout. Nguyên nhân thường: giá shipping, thiếu payment method, UX phức tạp, hoặc user cần so sánh giá.',tags:['Thanh toán','Funnel','Tối ưu']},
+  // TỶ LỆ MUA HÀNG
+  {q:'Purchase Rate (Tỷ lệ mua hàng) trong TikTok Ads được tính như thế nào?',opts:['Số đơn hàng ÷ Số lượt hiển thị × 100%','Số đơn hàng ÷ Số click × 100%','Số đơn hàng ÷ Số lượt xem trang sản phẩm × 100%','Số đơn hàng ÷ Số lần thêm giỏ hàng × 100%'],ans:2,explain:'Purchase Rate = Số đơn hàng ÷ Số lượt xem trang sản phẩm × 100%. Đây là chỉ số tổng hợp phản ánh hiệu quả của cả funnel từ xem sản phẩm đến mua.',tags:['Purchase Rate','TikTok Shop']},
+  // CIR
+  {q:'CIR (Cost-to-Income Ratio) được tính bằng công thức nào?',opts:['CIR = GMV ÷ Chi phí × 100%','CIR = Chi phí ÷ GMV × 100%','CIR = (Chi phí + Giá vốn) ÷ GMV × 100%','CIR = Chi phí ÷ Lợi nhuận × 100%'],ans:1,explain:'CIR = Chi phí ÷ GMV × 100%. CIR là nghịch đảo của ROAS: ROAS = 7 → CIR = 1/7 ≈ 14.3%. CIR thấp = hiệu quả ads cao. Target thông thường: CIR < 15-20%.',tags:['CIR','Công thức']},
+  // ROI
+  {q:'ROI khác ROAS ở điểm quan trọng nào?',opts:['ROI và ROAS là hai tên gọi khác nhau của cùng một chỉ số','ROI tính trên lợi nhuận thực (sau trừ giá vốn), ROAS chỉ tính trên doanh thu GMV','ROAS tính trên lợi nhuận, ROI tính trên doanh thu','ROI chỉ dùng cho ecommerce, ROAS dùng cho mọi ngành'],ans:1,explain:'ROAS = GMV/Chi phí ads (chưa trừ giá vốn). ROI = (Lợi nhuận - Chi phí) / Chi phí × 100% — phản ánh hiệu quả đầu tư thực sự. Một campaign có ROAS cao vẫn có thể có ROI âm nếu biên lợi nhuận thấp.',tags:['ROI','ROAS','So sánh']},
+  // AOV
+  {q:'AOV (Average Order Value) được tính như thế nào?',opts:['AOV = Số đơn hàng ÷ Tổng GMV','AOV = Tổng GMV ÷ Số đơn hàng','AOV = Tổng GMV ÷ Số sản phẩm bán ra','AOV = Chi phí ÷ Số đơn hàng'],ans:1,explain:'AOV = Tổng GMV ÷ Số đơn hàng. AOV cao hơn thường đồng nghĩa với hiệu quả ads tốt hơn vì chi phí mỗi đơn không đổi nhưng giá trị mỗi đơn lớn hơn.',tags:['AOV','Công thức']},
+  {q:'Yếu tố nào giúp tăng AOV hiệu quả nhất?',opts:['Giảm giá sản phẩm để kích cầu','Bundle sản phẩm, upsell, cross-sell và ngưỡng freeship','Tăng tần suất quảng cáo','Mở rộng tệp audience'],ans:1,explain:'AOV tăng bằng: Bundle (mua kèm), Upsell (sản phẩm cao cấp hơn), Cross-sell (sản phẩm bổ sung), Minimum order freeship (khuyến khích mua thêm để đủ ngưỡng ship miễn phí).',tags:['AOV','Tối ưu']},
+  // TỶ LỆ QUAY LẠI
+  {q:'Tỷ lệ người mua quay lại (Repeat Purchase Rate) phản ánh điều gì?',opts:['Tỷ lệ click vào quảng cáo lần thứ 2','Tỷ lệ khách hàng đã mua hàng quay lại mua thêm lần nữa','Số lần trung bình một người xem quảng cáo','Tỷ lệ người dùng quay lại trang web sau bounce'],ans:1,explain:'Repeat Purchase Rate = Số khách mua lại ÷ Tổng số khách đã mua × 100%. Chỉ số này phản ánh loyalty và satisfaction. RPR cao giảm chi phí acquisition vì không cần tốn ads để convert lại khách cũ.',tags:['Repeat Purchase','Retention']},
+  {q:'Yếu tố nào ảnh hưởng NHIỀU NHẤT đến Tỷ lệ người mua quay lại?',opts:['Tần suất quảng cáo retargeting','Chất lượng sản phẩm, trải nghiệm mua hàng và chăm sóc sau bán','CTR của quảng cáo brand','Ngân sách campaign'],ans:1,explain:'RPR chủ yếu phụ thuộc vào trải nghiệm sau mua: chất lượng sản phẩm đúng kỳ vọng, thời gian giao hàng, CS hậu mãi. Ads retargeting hỗ trợ nhưng không thể bù đắp sản phẩm/dịch vụ kém.',tags:['Repeat Purchase','Yếu tố tác động']},
+  // BONUS CHUYÊN SÂU
+  {q:'Khi ROAS tốt nhưng CIR cũng cao, đó là dấu hiệu của vấn đề gì?',opts:['Campaign đang over-spend','Biên lợi nhuận sản phẩm thấp, cần review pricing strategy','Audience đã bão hòa','Creative không còn hiệu quả'],ans:1,explain:'CIR cao = chi phí ads chiếm tỷ trọng lớn trong GMV. Dù ROAS = 7 (tốt), nếu biên lợi nhuận chỉ 15%, CIR 14.3% thì gần như không còn margin sau khi trừ giá vốn và chi phí vận hành.',tags:['CIR','ROAS','Business']},
+  {q:'Trong phễu chuyển đổi TikTok Shop, "Drop-off" lớn nhất thường xảy ra ở đâu?',opts:['Từ Impression → Click','Từ Product View → Add to Cart','Từ Add to Cart → Initiate Checkout','Từ Initiate Checkout → Purchase'],ans:1,explain:'Drop-off lớn nhất thường ở Product View → Add to Cart (người xem nhưng không đủ bị thuyết phục mua). Tối ưu: ảnh/video sản phẩm tốt hơn, review, giá cạnh tranh, flash sale.',tags:['Funnel','TikTok Shop']},
+  {q:'Nếu CPM tăng 30% nhưng CTR cũng tăng 30%, CPC thay đổi như thế nào?',opts:['CPC tăng 30%','CPC giảm 30%','CPC không thay đổi','CPC tăng 60%'],ans:2,explain:'CPC = CPM ÷ (CTR × 10). Nếu CPM tăng 30% và CTR tăng 30%: CPC = (CPM×1.3) ÷ (CTR×1.3×10) = CPM/(CTR×10) = CPC ban đầu. CPC không thay đổi khi CPM và CTR tăng cùng tỷ lệ.',tags:['CPC','CPM','CTR','Tính toán']},
+  {q:'Shopee Ads ghi nhận GMV "trực tiếp" và "gián tiếp" khác nhau như thế nào?',opts:['GMV trực tiếp = click vào ads rồi mua ngay; GMV gián tiếp = xem ads, rời đi, sau đó quay lại mua trong cửa sổ attribution','GMV trực tiếp = mua qua desktop; GMV gián tiếp = mua qua mobile','GMV trực tiếp = mua sản phẩm được quảng cáo; GMV gián tiếp = mua sản phẩm khác trong cùng shop','GMV trực tiếp = paid traffic; GMV gián tiếp = organic traffic'],ans:0,explain:'Shopee Ads phân loại: Direct GMV = đơn hàng được đặt trong session có click vào ads. Indirect GMV = user click ads, không mua ngay, nhưng quay lại shop trong cửa sổ attribution (thường 7-14 ngày) và mua.',tags:['Shopee Ads','Attribution']},
+  {q:'Benchmark ROAS nào là phù hợp cho Shopee Ads theo thị trường Media Omni?',opts:['ROAS 3-4','ROAS 5-6','ROAS 8-10','ROAS 12+'],ans:2,explain:'Benchmark Shopee Ads của Media Omni: ROAS ~9. Range 8-10 là tốt cho ecommerce marketplace. Shopee ROAS cao hơn TikTok vì intent cao hơn (người dùng đã vào Shopee với mục đích mua hàng).',tags:['ROAS','Shopee','Benchmark']},
+  {q:'Tại sao ROAS benchmark Shopee (9) cao hơn TikTok (6)?',opts:['Shopee có nhiều người dùng hơn TikTok','Shopee là marketplace — user có purchase intent cao hơn; TikTok là social — cần tạo demand trước','TikTok ads đắt hơn Shopee ads','Shopee tính ROAS theo cách khác với TikTok'],ans:1,explain:'TikTok = demand creation platform: user scroll giải trí, quảng cáo phải "tạo nhu cầu" → conversion rate thấp hơn → ROAS thấp hơn. Shopee = intent capture: user đã muốn mua → dễ convert hơn → ROAS cao hơn.',tags:['ROAS','TikTok','Shopee','Strategy']},
+  {q:'CPA (Cost Per Acquisition) được tính như thế nào?',opts:['CPA = Click ÷ Conversion','CPA = Chi phí ÷ Số conversion (đơn hàng/lead)','CPA = Conversion ÷ Chi phí','CPA = Chi phí ÷ Impression × 1000'],ans:1,explain:'CPA = Chi phí ÷ Số conversion. Conversion có thể là: đơn hàng (CPO), lead, install, đăng ký... CPA thấp = hiệu quả campaign tốt. Khác với CPC (cost per click) — CPA tính đến hành động cuối cùng.',tags:['CPA','Conversion']},
+];
+
+// ── BENCHMARK TOPICS (Dạng 1) ──
+const BENCHMARK_TOPICS=[
+  {id:'tiktok-benchmark',name:'TikTok Benchmark',icon:'🎵',questions:[]},
+  {id:'shopee-benchmark',name:'Shopee Benchmark',icon:'🛍️',questions:[]},
+  {id:'meta-benchmark',name:'Meta Benchmark',icon:'📘',questions:[]},
+  {id:'google-benchmark',name:'Google Benchmark',icon:'🔍',questions:[]},
+];
+
+const CHISO_TOPIC={id:'chiso',name:'Chỉ số Ads',icon:'📊',questions:CHISO_QUESTIONS};
+
+// ── STATE ──
+let currentType=null;
+let currentTopic=null;
+let currentQ=0;
+let answers=[];
+let marked=[];
+let score=0;
+let timerInterval=null;
+let timeLeft=900;
+let answered=false;
+
+// ── TYPE SELECT ──
+function selectType(type){
+  currentType=type;
+  const sec=document.getElementById('topicSection');
+  sec.style.display='block';
+  if(type==='benchmark'){
+    document.getElementById('topicSectionTitle').textContent='Chọn platform Benchmark';
+    document.getElementById('topicGrid').innerHTML=BENCHMARK_TOPICS.map(t=>`
+      <div class="topic-card locked">
+        <div class="tc-emoji">${t.icon}</div>
+        <div><div class="tc-name">${t.name}</div><div class="tc-count">Sắp có câu hỏi</div></div>
+        <span class="tc-lock">🔒</span>
+      </div>
+    `).join('');
+  } else if(type==='chiso'){
+    document.getElementById('topicSectionTitle').textContent='Chỉ số Ads — 30 câu';
+    document.getElementById('topicGrid').innerHTML=`
+      <div class="topic-card" onclick="startQuiz('chiso')" style="grid-column:span 2">
+        <div class="tc-emoji">📊</div>
+        <div><div class="tc-name">Chỉ số Ads — Đầy đủ (30 câu)</div><div class="tc-count">Định nghĩa, công thức, yếu tố tác động</div></div>
+      </div>
+    `;
+  }
+  sec.scrollIntoView({behavior:'smooth'});
+}
+
+function startQuiz(topicId){
+  if(topicId==='chiso') currentTopic=CHISO_TOPIC;
+  else currentTopic=BENCHMARK_TOPICS.find(t=>t.id===topicId);
+  if(!currentTopic||!currentTopic.questions.length){
+    alert('Chủ đề này chưa có câu hỏi. Vui lòng chờ cập nhật!');return;
+  }
+  currentQ=0;
+  answers=new Array(currentTopic.questions.length).fill(null);
+  marked=new Array(currentTopic.questions.length).fill(false);
+  score=0;timeLeft=900;answered=false;
+  document.getElementById('hubPage').style.display='none';
+  document.getElementById('quizPage').style.display='block';
+  document.getElementById('qbTopic').textContent=currentTopic.name;
+  document.getElementById('qmTotal').textContent=currentTopic.questions.length;
+  buildNavGrid();
+  renderQ();
+  startTimer();
+}
+
+function buildNavGrid(){
+  const total=currentTopic.questions.length;
+  document.getElementById('qNavGrid').innerHTML=Array.from({length:total},(_,i)=>`
+    <button class="q-nav-btn ${i===0?'current':''}" id="qnb${i}" onclick="jumpToQ(${i})">${i+1}</button>
+  `).join('');
+}
+
+function renderQ(){
+  const q=currentTopic.questions[currentQ];
+  const total=currentTopic.questions.length;
+  document.getElementById('qmCur').textContent=currentQ+1;
+  document.getElementById('progressFill').style.width=`${(currentQ/total)*100}%`;
+  document.getElementById('qHeader').textContent=`Câu hỏi ${currentQ+1}`;
+  document.getElementById('qText').textContent=q.q;
+  const userAns=answers[currentQ];
+  answered=userAns!==null;
+  document.getElementById('qOptions').innerHTML=q.opts.map((opt,i)=>{
+    let cls='q-opt';
+    if(answered){
+      cls+=' disabled';
+      if(i===q.ans) cls+=' correct';
+      else if(i===userAns&&i!==q.ans) cls+=' wrong';
+    } else if(i===userAns) cls+=' selected';
+    return `<div class="${cls}" onclick="selectAns(${i})">
+      <div class="opt-letter">${['A','B','C','D'][i]}</div>
+      <div class="opt-text">${opt}</div>
+    </div>`;
+  }).join('');
+  const exp=document.getElementById('qExplain');
+  if(answered&&q.explain){
+    document.getElementById('qExplainText').textContent=q.explain;
+    exp.style.display='block';
+  } else exp.style.display='none';
+  const tags=document.getElementById('topicTags');
+  tags.innerHTML=(q.tags||[]).map(t=>`<span class="plt-chip">${t}</span>`).join('');
+  document.getElementById('nextBtn').textContent=currentQ===total-1?'Nộp bài →':'Câu tiếp theo →';
+  // update nav grid
+  document.querySelectorAll('.q-nav-btn').forEach((b,i)=>{
+    b.className='q-nav-btn';
+    if(i===currentQ) b.classList.add('current');
+    else if(marked[i]) b.classList.add('marked');
+    else if(answers[i]!==null){
+      b.classList.add(answers[i]===currentTopic.questions[i].ans?'correct':'wrong');
+    }
+  });
+  updateRing();
+}
+
+function selectAns(idx){
+  if(answers[currentQ]!==null) return;
+  answers[currentQ]=idx;
+  const q=currentTopic.questions[currentQ];
+  if(idx===q.ans) score++;
+  answered=true;
+  renderQ();
+}
+
+function nextQ(){
+  if(currentQ===currentTopic.questions.length-1){submitQuiz();return;}
+  currentQ++;renderQ();
+}
+function prevQ(){if(currentQ>0){currentQ--;renderQ();}}
+function jumpToQ(i){currentQ=i;renderQ();}
+function markQ(){
+  marked[currentQ]=!marked[currentQ];
+  document.getElementById('markBtn').textContent=marked[currentQ]?'🔖 Đã đánh dấu':'🔖 Đánh dấu';
+  renderQ();
+}
+
+function updateRing(){
+  const total=currentTopic.questions.length;
+  const done=answers.filter(a=>a!==null).length;
+  const correct=answers.reduce((acc,a,i)=>{
+    if(a!==null&&a===currentTopic.questions[i].ans) return acc+1;
+    return acc;
+  },0);
+  const pct=done>0?Math.round(correct/done*100):0;
+  const circumference=251.2;
+  const offset=circumference-(circumference*pct/100);
+  document.getElementById('ringCircle').style.strokeDashoffset=offset;
+  document.getElementById('ringPct').textContent=pct+'%';
+  document.getElementById('ssCorrect').textContent=correct;
+  document.getElementById('ssRemain').textContent=total-done;
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60);
+    const s=timeLeft%60;
+    const el=document.getElementById('timerVal');
+    el.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+    el.className='timer-val'+(timeLeft<=60?' warn':'');
+    if(timeLeft<=0){clearInterval(timerInterval);submitQuiz();}
+  },1000);
+}
+
+function submitQuiz(){
+  clearInterval(timerInterval);
+  const total=currentTopic.questions.length;
+  const correct=answers.reduce((acc,a,i)=>{
+    if(a!==null&&a===currentTopic.questions[i].ans) return acc+1;
+    return acc;
+  },0);
+  const pct=Math.round(correct/total*100);
+  document.getElementById('quizPage').style.display='none';
+  document.getElementById('resultPage').style.display='block';
+  window.scrollTo(0,0);
+  document.getElementById('resultScore').textContent=`${correct}/${total}`;
+  document.getElementById('resultTopic').textContent=currentTopic.name;
+  let emoji='😐',grade='Cần cải thiện — hãy ôn lại và thử lại!';
+  if(pct>=90){emoji='🏆';grade='Xuất sắc! Bạn nắm rất vững chủ đề này.';}
+  else if(pct>=70){emoji='✅';grade='Tốt! Còn một vài điểm cần ôn thêm.';}
+  else if(pct>=50){emoji='📚';grade='Trung bình — xem lại tài liệu và thử lại.';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultGrade').textContent=grade;
+  document.getElementById('breakdownList').innerHTML=currentTopic.questions.map((q,i)=>{
+    const isCorrect=answers[i]===q.ans;
+    return `<div class="rb-item">
+      <span class="rb-num">${i+1}</span>
+      <span class="rb-q">${q.q.substring(0,60)}${q.q.length>60?'...':''}</span>
+      <span class="rb-pill ${isCorrect?'rbp-c':'rbp-w'}">${isCorrect?'✓ Đúng':'✗ Sai'}</span>
+    </div>`;
+  }).join('');
+  // save
+  if(currentUser){
+    const key=`quiz_${currentUser.username}_${currentTopic.id}`;
+    localStorage.setItem(key,JSON.stringify({score:correct,total,pct,date:new Date().toLocaleDateString('vi-VN'),topic:currentTopic.name}));
+  }
+}
+
+function retryQuiz(){
+  document.getElementById('resultPage').style.display='none';
+  startQuiz(currentTopic.id);
+}
+
+function backToHub(){
+  clearInterval(timerInterval);
+  document.getElementById('quizPage').style.display='none';
+  document.getElementById('resultPage').style.display='none';
+  document.getElementById('hubPage').style.display='block';
+  document.getElementById('topicSection').style.display='none';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
