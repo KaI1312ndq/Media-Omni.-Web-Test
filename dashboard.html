@@ -187,66 +187,55 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--pale-sky);color
 
 <script>
 const USERS={
-  'quangnd':  {pass:'omni2026lead',role:'admin', name:'Nguyễn Đức Quảng'},
-  'linhntkh': {pass:'omni2026',role:'member',name:'Nguyễn Trần Khánh Linh'},
-  'duychk':   {pass:'omni2026',role:'member',name:'Chu Khánh Duy'},
-  'ductanh':  {pass:'omni2026',role:'member',name:'Thiều Anh Đức'},
-  'linhdkh':  {pass:'omni2026',role:'member',name:'Đoàn Khánh Linh'},
-  'thaodph':  {pass:'omni2026',role:'member',name:'Đỗ Phương Thảo'},
-  'hangdth':  {pass:'omni2026',role:'member',name:'Đỗ Thị Hằng'},
-  'trungdhu': {pass:'omni2026',role:'member',name:'Đặng Hữu Trung'},
-  'anhpq':    {pass:'omni2026',role:'member',name:'Phạm Quyền Anh'},
-  'khanhnm':  {pass:'omni2026',role:'member',name:'Nguyễn Minh Khánh'},
-  'ngochb':   {pass:'omni2026',role:'member',name:'Hoàng Bảo Ngọc'},
-  'phuongnm': {pass:'omni2026',role:'member',name:'Nguyễn Mai Phương'},
-  'upbase':   {pass:'upbase2026',role:'upbase',name:'UpBase Staff'},
+  'quangnd':{pass:'omni2026lead',role:'admin',name:'Nguyễn Đức Quảng'},
+  'linhntkh':{pass:'omni2026',role:'member',name:'Nguyễn Trần Khánh Linh'},
+  'duychk':{pass:'omni2026',role:'member',name:'Chu Khánh Duy'},
+  'ductanh':{pass:'omni2026',role:'member',name:'Thiều Anh Đức'},
+  'linhdkh':{pass:'omni2026',role:'member',name:'Đoàn Khánh Linh'},
+  'thaodph':{pass:'omni2026',role:'member',name:'Đỗ Phương Thảo'},
+  'hangdth':{pass:'omni2026',role:'member',name:'Đỗ Thị Hằng'},
+  'trungdhu':{pass:'omni2026',role:'member',name:'Đặng Hữu Trung'},
+  'anhpq':{pass:'omni2026',role:'member',name:'Phạm Quyền Anh'},
+  'khanhnm':{pass:'omni2026',role:'member',name:'Nguyễn Minh Khánh'},
+  'ngochb':{pass:'omni2026',role:'member',name:'Hoàng Bảo Ngọc'},
+  'phuongnm':{pass:'omni2026',role:'member',name:'Nguyễn Mai Phương'},
+  'upbase':{pass:'upbase2026',role:'upbase',name:'UpBase Staff'},
 };
-
 const DASH_CFG={
-  admin:{
-    badge:'Admin / Lead',badgeClass:'rb-admin',
-    sub:'Bạn có quyền truy cập toàn bộ hệ thống — quiz, kết quả team, quản lý tài khoản.',
-    cards:[
-      {icon:'📝',title:'Quiz Hub',desc:'Làm bài kiểm tra theo chủ đề — Dạng 1 & Dạng 2.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
-      {icon:'📊',title:'Bảng điểm Team',desc:'Xem điểm quiz của tất cả thành viên.',badge:'dcb-available',label:'Xem ngay',action:'showScores'},
-      {icon:'👥',title:'Quản lý thành viên',desc:'Xem danh sách và phân quyền tài khoản.',badge:'dcb-soon',label:'Phase 3'},
-      {icon:'📚',title:'SOP & Resources',desc:'Tài liệu, template, checklist nội bộ.',badge:'dcb-soon',label:'Phase 4'},
-      {icon:'✏️',title:'Quản lý Quiz',desc:'Thêm, sửa câu hỏi cho từng chủ đề.',badge:'dcb-soon',label:'Phase 3'},
-      {icon:'📈',title:'Analytics',desc:'Thống kê performance quiz toàn team.',badge:'dcb-soon',label:'Phase 3'},
-    ]
-  },
-  member:{
-    badge:'Member',badgeClass:'rb-member',
-    sub:'Chào mừng bạn đến Team Hub — làm bài quiz, xem kết quả và truy cập tài nguyên nội bộ.',
-    cards:[
-      {icon:'📝',title:'Quiz Hub',desc:'Làm bài kiểm tra kiến thức theo chủ đề.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
-      {icon:'📊',title:'Kết quả của tôi',desc:'Xem lịch sử và điểm các bài đã làm.',badge:'dcb-available',label:'Xem',action:'showMyScores'},
-      {icon:'📚',title:'SOP & Resources',desc:'Tài liệu, template, checklist nội bộ.',badge:'dcb-soon',label:'Phase 4'},
-      {icon:'🎯',title:'OKR & Mục tiêu',desc:'Xem OKR team và tiến độ cá nhân.',badge:'dcb-soon',label:'Phase 4'},
-    ]
-  },
-  upbase:{
-    badge:'UpBase Staff',badgeClass:'rb-upbase',
-    sub:'Chào mừng bạn — bạn có thể thử quiz kiến thức marketing và xem năng lực team.',
-    cards:[
-      {icon:'📝',title:'Quiz Kiến thức',desc:'Thử sức với bài kiểm tra performance marketing.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
-      {icon:'🏠',title:'Xem Trang chủ',desc:'Tổng quan năng lực và kết quả của Media Omni.',badge:'dcb-available',label:'Xem',action:'goHome'},
-    ]
-  }
+  admin:{badge:'Admin / Lead',badgeClass:'rb-admin',sub:'Bạn có quyền truy cập toàn bộ hệ thống.',cards:[
+    {icon:'📝',title:'Quiz Hub',desc:'Làm bài kiểm tra Dạng 1 & Dạng 2.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
+    {icon:'📊',title:'Bảng điểm Team',desc:'Xem điểm quiz của tất cả thành viên từ Google Sheets.',badge:'dcb-available',label:'Xem ngay',action:'showScores'},
+    {icon:'👥',title:'Quản lý thành viên',desc:'Phân quyền tài khoản.',badge:'dcb-soon',label:'Phase 3'},
+    {icon:'📚',title:'SOP & Resources',desc:'Tài liệu, template, checklist nội bộ.',badge:'dcb-soon',label:'Phase 4'},
+    {icon:'✏️',title:'Quản lý Quiz',desc:'Thêm, sửa câu hỏi.',badge:'dcb-soon',label:'Phase 3'},
+    {icon:'📈',title:'Analytics',desc:'Thống kê performance quiz toàn team.',badge:'dcb-soon',label:'Phase 3'},
+  ]},
+  member:{badge:'Member',badgeClass:'rb-member',sub:'Làm bài quiz, xem kết quả và truy cập tài nguyên nội bộ.',cards:[
+    {icon:'📝',title:'Quiz Hub',desc:'Làm bài kiểm tra kiến thức.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
+    {icon:'📊',title:'Kết quả của tôi',desc:'Xem lịch sử điểm các bài đã làm.',badge:'dcb-available',label:'Xem',action:'showMyScores'},
+    {icon:'📚',title:'SOP & Resources',desc:'Tài liệu, template nội bộ.',badge:'dcb-soon',label:'Phase 4'},
+    {icon:'🎯',title:'OKR & Mục tiêu',desc:'OKR team và tiến độ cá nhân.',badge:'dcb-soon',label:'Phase 4'},
+  ]},
+  upbase:{badge:'UpBase Staff',badgeClass:'rb-upbase',sub:'Thử quiz kiến thức marketing.',cards:[
+    {icon:'📝',title:'Quiz Kiến thức',desc:'Bài kiểm tra performance marketing.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
+    {icon:'🏠',title:'Trang chủ',desc:'Tổng quan năng lực Media Omni.',badge:'dcb-available',label:'Xem',action:'goHome'},
+  ]},
 };
-
+const SHEETS='https://script.google.com/macros/s/AKfycbz88wmFm7dcP0rjsyaCkLNrxqe_2WM0tWcFljTm8ymEophSWhZ-HWTVpL1oFuUEWUv-/exec';
 let currentUser=null;
 
 function doLogin(){
   const u=document.getElementById('lu').value.trim().toLowerCase();
   const p=document.getElementById('lp').value;
+  const err=document.getElementById('loginError');
+  err.style.display='none';
   const user=USERS[u];
   if(user&&user.pass===p){
     currentUser={username:u,...user};
     sessionStorage.setItem('mo_user',JSON.stringify(currentUser));
     showDash();
   } else {
-    document.getElementById('loginError').style.display='block';
+    err.style.display='block';
   }
 }
 
@@ -258,16 +247,15 @@ function showDash(){
   document.getElementById('roleBadge').textContent=cfg.badge;
   document.getElementById('roleBadge').className='role-badge '+cfg.badgeClass;
   document.getElementById('userName').textContent=currentUser.name;
-  document.getElementById('welcomeTitle').textContent=`Xin chào, ${firstName} 👋`;
+  document.getElementById('welcomeTitle').textContent='Xin chào, '+firstName+' 👋';
   document.getElementById('welcomeSub').textContent=cfg.sub;
   document.getElementById('dashGrid').innerHTML=cfg.cards.map(c=>`
-    <div class="dash-card ${c.action?'':'disabled'}" onclick="${c.action?c.action+'()':''}">
+    <div class="dash-card ${c.action?'':'disabled'}" ${c.action?'onclick="'+c.action+'()"':''}>
       <div class="dc-icon">${c.icon}</div>
       <div class="dc-title">${c.title}</div>
       <div class="dc-desc">${c.desc}</div>
       <span class="dc-badge ${c.badge}">${c.label}</span>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function doLogout(){
@@ -280,14 +268,14 @@ function doLogout(){
   document.getElementById('scoresSection').style.display='none';
 }
 
-function goQuiz(){ window.location.href='quiz.html'; }
-function goHome(){ window.location.href='index.html'; }
+function goQuiz(){window.location.href='quiz.html';}
+function goHome(){window.location.href='index.html';}
 
 function showScores(){
   const sec=document.getElementById('scoresSection');
   sec.style.display='block';
   sec.scrollIntoView({behavior:'smooth'});
-  renderScores();
+  renderScores(null);
 }
 
 function showMyScores(){
@@ -296,28 +284,17 @@ function showMyScores(){
   sec.scrollIntoView({behavior:'smooth'});
   renderScores(currentUser.username);
 }
-async function renderScores(filterUser=null){
-  const body=document.getElementById('scoresBody');
-  const header=document.getElementById('scoresTableHead');
-  body.innerHTML='<div class="no-scores">⏳ Đang tải dữ liệu...</div>';
 
+async function renderScores(filterUser){
+  const body=document.getElementById('scoresBody');
+  body.innerHTML='<div class="no-scores">⏳ Đang tải dữ liệu từ Google Sheets...</div>';
   try{
-    const SHEETS='https://script.google.com/macros/s/AKfycbz88wmFm7dcP0rjsyaCkLNrxqe_2WM0tWcFljTm8ymEophSWhZ-HWTVpL1oFuUEWUv-/exec';
     const res=await fetch(SHEETS);
     const json=await res.json();
     let rows=json.data||[];
-
-    // Filter
     if(filterUser) rows=rows.filter(r=>r['Username']===filterUser);
-
-    if(!rows.length){
-      body.innerHTML='<div class="no-scores">Chưa có kết quả nào.</div>';
-      return;
-    }
-
-    // Sort: mới nhất lên đầu
     rows.reverse();
-
+    if(!rows.length){body.innerHTML='<div class="no-scores">Chưa có kết quả nào.</div>';return;}
     body.innerHTML=rows.map(r=>{
       const pct=parseInt(r['%'])||0;
       const cls=pct>=80?'sp-high':pct>=50?'sp-mid':'sp-low';
@@ -329,16 +306,19 @@ async function renderScores(filterUser=null){
         <span style="color:var(--slate);font-size:.8rem">${r['Ngày làm']||'—'}</span>
       </div>`;
     }).join('');
-
   }catch(e){
-    body.innerHTML='<div class="no-scores">❌ Không tải được dữ liệu. Kiểm tra kết nối.</div>';
+    body.innerHTML='<div class="no-scores">❌ Lỗi tải dữ liệu — kiểm tra Apps Script hoặc kết nối mạng.</div>';
   }
 }
 
 function clearAllScores(){
-  alert('Tính năng xóa dữ liệu cần thực hiện trực tiếp trên Google Sheets.');
+  alert('Xóa dữ liệu thực hiện trực tiếp trên Google Sheets.');
 }
+
 window.addEventListener('DOMContentLoaded',()=>{
   const saved=sessionStorage.getItem('mo_user');
   if(saved){try{currentUser=JSON.parse(saved);showDash();}catch(e){}}
 });
+</script>
+</body>
+</html>
