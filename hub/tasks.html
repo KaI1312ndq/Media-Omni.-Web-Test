@@ -441,7 +441,15 @@ async function loadMyDay(){
     document.getElementById('tlBody').innerHTML='<div class="loading">❌ Không tải được dữ liệu.</div>';
   }
 }
-
+function fmtTime(val){
+  if(!val) return '';
+  try{
+    const d=new Date(val);
+    if(isNaN(d)) return val;
+    // Nếu là ISO date → lấy HH:MM
+    return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');
+  }catch(e){return val;}
+}
 function renderTimeline(tasks){
   const hours=['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
   document.getElementById('taskCount').textContent=tasks.length+' task'+(tasks.length!==1?'s':'');
@@ -455,7 +463,7 @@ function renderTimeline(tasks){
   hours.forEach(h=>{
     const slot=tasks.filter(t=>{
       if(!t['Giờ bắt đầu'])return false;
-      return t['Giờ bắt đầu'].substring(0,5)===h;
+      return fmtTime(t['Giờ bắt đầu'])===h;
     });
     html+=`<div class="tl-slot">
       <div class="tl-time">${h}</div>
@@ -478,7 +486,7 @@ function renderTaskCard(t){
       <div class="tc-name">${t['Task']||'—'}</div>
     </div>
     <div class="tc-meta">
-      ${t['Giờ bắt đầu']?`<span class="tc-time">⏰ ${t['Giờ bắt đầu']}${t['Giờ kết thúc']?' – '+t['Giờ kết thúc']:''}</span>`:''}
+      ${t['Giờ bắt đầu']?`<span class="tc-time">⏰ ${fmtTime(t['Giờ bắt đầu'])}${t['Giờ kết thúc']?' – '+fmtTime(t['Giờ kết thúc']):''}</span>`:''}
       <span class="tc-by">${t['Created Name']?t['Created Name'].split(' ').pop():''}</span>
       <span class="tc-pri ${priCls[pri]||'pri-medium'}">${priLabel[pri]||pri}</span>
     </div>
@@ -496,13 +504,13 @@ function renderSidebar(tasks){
   // Upcoming = tasks chưa done có giờ, sort theo giờ
   const now=new Date();
   const nowHH=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  const upcoming=tasks.filter(t=>t['Status']!=='done'&&t['Giờ bắt đầu']&&t['Giờ bắt đầu']>=nowHH).sort((a,b)=>a['Giờ bắt đầu'].localeCompare(b['Giờ bắt đầu'])).slice(0,4);
+  const upcoming=tasks.filter(t=>t['Status']!=='done'&&t['Giờ bắt đầu']&&fmtTime(t['Giờ bắt đầu'])>=nowHH).sort((a,b)=>fmtTime(a['Giờ bắt đầu']).localeCompare(fmtTime(b['Giờ bắt đầu']))).slice(0,4);
   const ul=document.getElementById('upcomingList');
   if(!upcoming.length){ul.innerHTML='<div style="font-size:.8rem;color:var(--slate)">Không còn task nào hôm nay.</div>';return;}
   ul.innerHTML=upcoming.map(t=>`<div class="up-item">
     <div class="up-dot" style="background:${dotColor[t['Priority']||'medium']}"></div>
     <div class="up-name">${t['Task']||'—'}</div>
-    <div class="up-time">${t['Giờ bắt đầu']||''}</div>
+    <div class="up-time">${fmtTime(t['Giờ bắt đầu'])}</div>
   </div>`).join('');
 }
 
