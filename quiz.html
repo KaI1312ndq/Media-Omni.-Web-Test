@@ -531,7 +531,7 @@ else document.getElementById('qnavU').textContent=CU.name;
 
 function saveSheets(data){
   showSave('saving');
-  fetch(SHEETS,{method:'POST',body:JSON.stringify({...data,username:CU.username,name:CU.name,role:CU.role})})
+  fetch(SHEETS,{method:'POST',body:JSON.stringify({type:'quiz',...data,username:CU.username,name:CU.name,role:CU.role})})
     .then(r=>r.json()).then(()=>showSave('ok')).catch(()=>showSave('err'));
 }
 function showSave(st){
