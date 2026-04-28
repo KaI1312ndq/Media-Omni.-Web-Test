@@ -338,3 +338,7 @@ async function renderScores(filterUser=null){
 function clearAllScores(){
   alert('Tính năng xóa dữ liệu cần thực hiện trực tiếp trên Google Sheets.');
 }
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=sessionStorage.getItem('mo_user');
+  if(saved){try{currentUser=JSON.parse(saved);showDash();}catch(e){}}
+});
