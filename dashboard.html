@@ -204,6 +204,7 @@ const USERS={
 const DASH_CFG={
   admin:{badge:'Admin / Lead',badgeClass:'rb-admin',sub:'Bạn có quyền truy cập toàn bộ hệ thống.',cards:[
     {icon:'📝',title:'Quiz Hub',desc:'Làm bài kiểm tra Dạng 1 & Dạng 2.',badge:'dcb-available',label:'Sẵn sàng',action:'goQuiz'},
+    {icon:'📅',title:'Daily Tasks',desc:'Xem và quản lý task hàng ngày của team.',badge:'dcb-available',label:'Mở',action:'gotoTasks'},
     {icon:'📊',title:'Bảng điểm Team',desc:'Xem điểm quiz của tất cả thành viên từ Google Sheets.',badge:'dcb-available',label:'Xem ngay',action:'showScores'},
     {icon:'👥',title:'Quản lý thành viên',desc:'Phân quyền tài khoản.',badge:'dcb-soon',label:'Phase 3'},
     {icon:'📚',title:'SOP & Resources',desc:'Tài liệu, template, checklist nội bộ.',badge:'dcb-soon',label:'Phase 4'},
@@ -269,6 +270,7 @@ function doLogout(){
 }
 
 function goQuiz(){window.location.href='quiz.html';}
+function gotoTasks(){ window.location.href='hub/tasks.html'; }
 function goHome(){window.location.href='index.html';}
 
 function showScores(){
